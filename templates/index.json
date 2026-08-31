@@ -8,89 +8,6 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "hero_jVaWmY": {
-      "type": "hero",
-      "blocks": {
-        "text_YLPk4p": {
-          "type": "text",
-          "name": "t:names.heading",
-          "settings": {
-            "text": "<p>Browse our latest products</p>",
-            "text_color": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "font_size": "1rem",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
-        },
-        "button_H9gpTf": {
-          "type": "button",
-          "name": "t:names.button",
-          "settings": {
-            "label": "Shop all",
-            "link": "shopify://collections/all",
-            "open_in_new_tab": false,
-            "style_class": "button-custom",
-            "custom_button_background": "rgba(0,0,0,0)",
-            "custom_button_text": "{{ settings.color_palette.background }}",
-            "custom_button_border": "{{ settings.color_palette.background }}",
-            "width": "fit-content",
-            "custom_width": 100,
-            "width_mobile": "fit-content",
-            "custom_width_mobile": 100
-          },
-          "blocks": {}
-        }
-      },
-      "block_order": [
-        "text_YLPk4p",
-        "button_H9gpTf"
-      ],
-      "name": "t:names.hero",
-      "settings": {
-        "media_type_1": "image",
-        "media_type_2": "image",
-        "stack_media_on_mobile": false,
-        "custom_mobile_media": false,
-        "media_type_1_mobile": "image",
-        "media_type_2_mobile": "image",
-        "open_in_new_tab": false,
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "space-between",
-        "vertical_alignment": "flex-end",
-        "align_baseline": true,
-        "horizontal_alignment_flex_direction_column": "center",
-        "vertical_alignment_flex_direction_column": "flex-end",
-        "gap": 24,
-        "section_width": "page-width",
-        "section_height": "medium",
-        "section_height_custom": 50,
-        "background_color": "rgba(0,0,0,0)",
-        "toggle_overlay": true,
-        "overlay_color": "#12121266",
-        "overlay_style": "solid",
-        "gradient_direction": "to bottom",
-        "blurred_reflection": false,
-        "reflection_opacity": 75,
-        "padding-block-start": 100,
-        "padding-block-end": 72
-      }
-    },
     "product_list_fa6P9H": {
       "type": "product-list",
       "blocks": {
@@ -130,7 +47,7 @@
               "type": "_product-list-text",
               "name": "t:names.collection_title",
               "settings": {
-                "text": "<h3>{{ closest.collection.title }}</h3>",
+                "text": "<h3>Bestsellers</h3>",
                 "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
@@ -175,7 +92,7 @@
           "name": "t:names.product_card",
           "static": true,
           "settings": {
-            "product_card_gap": 4,
+            "product_card_gap": 6,
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
@@ -190,7 +107,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "square",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -211,7 +128,7 @@
                 "alignment": "left",
                 "type_preset": "rte",
                 "font": "var(--font-body--family)",
-                "font_size": "1rem",
+                "font_size": "0.9375rem",
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
@@ -247,39 +164,427 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "swatches_bestsellers": {
+              "type": "swatches",
+              "settings": {
+                "product_swatches_alignment": "flex-start",
+                "hide_padding": false,
+                "product_swatches_padding_top": 8,
+                "product_swatches_padding_bottom": 4,
+                "product_swatches_padding_left": 0,
+                "product_swatches_padding_right": 0
+              }
+            },
+            "review_bestsellers": {
+              "type": "review",
+              "settings": {
+                "stars_style": "outline",
+                "show_number": true,
+                "alignment": "left"
+              }
+            },
+            "material_bestsellers": {
+              "type": "custom-liquid",
+              "settings": {
+                "custom_liquid": "{%- assign m = closest.product.metafields.custom.material -%}{%- if m != blank -%}<span class=\"card-material\">{{ m }}</span>{%- endif -%}"
+              }
             }
           },
           "block_order": [
             "product_card_gallery_677WP3",
             "product_title_YXxMTj",
-            "price_JQzVV4"
+            "swatches_bestsellers",
+            "material_bestsellers",
+            "price_JQzVV4",
+            "review_bestsellers"
           ]
         }
       },
       "name": "t:names.product_list",
       "settings": {
         "collection": "all",
-        "layout_type": "grid",
-        "carousel_on_mobile": false,
-        "max_products": 8,
-        "columns": 4,
+        "layout_type": "carousel",
+        "carousel_on_mobile": true,
+        "max_products": 12,
+        "columns": 5,
         "mobile_columns": "2",
         "mobile_card_size": "60cqw",
-        "columns_gap": 8,
+        "columns_gap": 12,
         "rows_gap": 24,
         "icons_style": "arrow",
-        "icons_shape": "none",
+        "icons_shape": "circle",
         "section_width": "page-width",
         "horizontal_alignment": "flex-start",
         "gap": 28,
         "background_color": "{{ settings.color_palette.background }}",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    },
+    "category_chips": {
+      "type": "category-chips",
+      "settings": {
+        "heading": "",
+        "shape": "circle",
+        "size": 96,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "visibility": "mobile",
+        "desktop_columns": 5,
+        "style": "tile",
+        "mobile_columns": 2,
+        "ratio": "4 / 5",
+        "corner_radius": 12,
+        "show_arrow": true,
+        "subheading": "",
+        "heading_alignment": "center",
+        "label_alignment": "left",
+        "heading_level": "h2"
+      },
+      "blocks": {
+        "chip_1": {
+          "type": "chip",
+          "settings": {
+            "label": "Category 1"
+          }
+        },
+        "chip_2": {
+          "type": "chip",
+          "settings": {
+            "label": "Category 2"
+          }
+        },
+        "chip_3": {
+          "type": "chip",
+          "settings": {
+            "label": "Category 3"
+          }
+        },
+        "chip_4": {
+          "type": "chip",
+          "settings": {
+            "label": "Category 4"
+          }
+        },
+        "chip_5": {
+          "type": "chip",
+          "settings": {
+            "label": "Category 5"
+          }
+        }
+      },
+      "block_order": [
+        "chip_1",
+        "chip_2",
+        "chip_3",
+        "chip_4",
+        "chip_5"
+      ]
+    },
+    "main_banner": {
+      "type": "main-banner",
+      "settings": {
+        "ratio_mobile": "4 / 5",
+        "ratio_desktop": "65svh",
+        "subheading": "New Collection",
+        "heading": "Plum & Olive",
+        "button_label": "Shop now",
+        "link": "shopify://collections/all",
+        "text_position": "bottom-left",
+        "text_color": "#ffffff",
+        "overlay_opacity": 20,
+        "section_width": "full-width",
+        "heading_level": "h1"
+      }
+    },
+    "brand_trust": {
+      "type": "brand-trust",
+      "blocks": {
+        "promise_1": {
+          "type": "promise",
+          "settings": {
+            "title": "Free & Insured Shipping",
+            "icon": "truck",
+            "icon_size": 24,
+            "icon_color": "#000000"
+          }
+        },
+        "promise_2": {
+          "type": "promise",
+          "settings": {
+            "title": "Certified Diamond & Gold Jewelry",
+            "icon": "clipboard",
+            "icon_size": 24,
+            "icon_color": "#000000"
+          }
+        },
+        "promise_3": {
+          "type": "promise",
+          "settings": {
+            "title": "Lifetime Buyback or Exchange",
+            "icon": "return",
+            "icon_size": 24,
+            "icon_color": "#000000"
+          }
+        },
+        "promise_4": {
+          "type": "promise",
+          "settings": {
+            "title": "15-day Money Back Guarantee",
+            "icon": "price_tag",
+            "icon_size": 24,
+            "icon_color": "#000000"
+          }
+        }
+      },
+      "block_order": [
+        "promise_1",
+        "promise_2",
+        "promise_3",
+        "promise_4"
+      ],
+      "settings": {
+        "layout": "grid",
+        "icon_position": "beside",
+        "divider_width": 0,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    },
+    "icons_of_summer": {
+      "type": "collection-carousel",
+      "blocks": {
+        "slide_1": {
+          "type": "slide",
+          "settings": {
+            "label": "Rings",
+            "cta": "Shop now"
+          }
+        },
+        "slide_2": {
+          "type": "slide",
+          "settings": {
+            "label": "Earrings",
+            "cta": "Shop now"
+          }
+        },
+        "slide_3": {
+          "type": "slide",
+          "settings": {
+            "label": "Necklaces",
+            "cta": "Shop now"
+          }
+        },
+        "slide_4": {
+          "type": "slide",
+          "settings": {
+            "label": "Bracelets",
+            "cta": "Shop now"
+          }
+        }
+      },
+      "block_order": [
+        "slide_1",
+        "slide_2",
+        "slide_3",
+        "slide_4"
+      ],
+      "settings": {
+        "heading": "Icons of Summer",
+        "heading_alignment": "center",
+        "heading_gap": 32,
+        "slide_width": 60,
+        "slide_width_mobile": 85,
+        "gap": 16,
+        "ratio": "16 / 9",
+        "corner_radius": 0,
+        "show_arrows": true,
+        "caption_position": "over",
+        "caption_color": "#ffffff",
+        "overlay_opacity": 35,
+        "section_width": "full-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "heading_level": "h2"
+      }
+    },
+    "shop_by_category": {
+      "type": "category-chips",
+      "blocks": {
+        "tile_1": {
+          "type": "chip",
+          "settings": {
+            "label": "Rings"
+          }
+        },
+        "tile_2": {
+          "type": "chip",
+          "settings": {
+            "label": "Earrings"
+          }
+        },
+        "tile_3": {
+          "type": "chip",
+          "settings": {
+            "label": "Bracelets"
+          }
+        },
+        "tile_4": {
+          "type": "chip",
+          "settings": {
+            "label": "Necklaces"
+          }
+        }
+      },
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4"
+      ],
+      "settings": {
+        "style": "card",
+        "heading": "Explore Our Range",
+        "subheading": "Find diamond jewelry pieces that match your style.",
+        "heading_alignment": "left",
+        "visibility": "both",
+        "mobile_columns": 2,
+        "desktop_columns": 4,
+        "ratio": "4 / 5",
+        "corner_radius": 12,
+        "show_arrow": true,
+        "shape": "square",
+        "size": 96,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "label_alignment": "left",
+        "heading_level": "h2"
+      }
+    },
+    "unique_design": {
+      "type": "feature-media",
+      "settings": {
+        "media_type": "image",
+        "ratio": "4 / 3",
+        "media_position": "left",
+        "media_width": 65,
+        "gap": 40,
+        "corner_radius": 0,
+        "heading": "Introducing the New Sixteen Stone Solitaire Ring",
+        "body": "<p>A detachable ring and bracelet in one \u2014 reimagined from our original band and solitaire designs into a single striking piece.</p>",
+        "text_alignment": "center",
+        "button_label": "Shop the collection",
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "heading_level": "h3"
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Beautifully made and even better in person. The finish is flawless.",
+            "author": "Ananya R.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
+            "author": "Meera S.",
+            "detail": "Solid Gold Bracelet"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
+            "author": "Priya K.",
+            "detail": "Verified buyer"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "settings": {
+        "heading": "What our customers say",
+        "heading_alignment": "center",
+        "card_style": "plain",
+        "columns": 3,
+        "gap": 24,
+        "corner_radius": 0,
+        "ratio": "1 / 1",
+        "show_stars": true,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "heading_level": "h2"
+      }
+    },
+    "bespoke": {
+      "type": "category-chips",
+      "blocks": {
+        "bespoke_1": {
+          "type": "chip",
+          "settings": {
+            "label": "Book an Appointment"
+          }
+        },
+        "bespoke_2": {
+          "type": "chip",
+          "settings": {
+            "label": "Meet Divya"
+          }
+        }
+      },
+      "block_order": [
+        "bespoke_1",
+        "bespoke_2"
+      ],
+      "settings": {
+        "style": "card",
+        "heading": "",
+        "subheading": "",
+        "heading_alignment": "center",
+        "visibility": "both",
+        "mobile_columns": 1,
+        "desktop_columns": 2,
+        "ratio": "4 / 3",
+        "corner_radius": 0,
+        "show_arrow": false,
+        "label_alignment": "center",
+        "shape": "square",
+        "size": 96,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32,
+        "heading_level": "h2"
       }
     }
   },
   "order": [
-    "hero_jVaWmY",
-    "product_list_fa6P9H"
+    "category_chips",
+    "main_banner",
+    "brand_trust",
+    "icons_of_summer",
+    "product_list_fa6P9H",
+    "shop_by_category",
+    "unique_design",
+    "reviews",
+    "bespoke"
   ]
 }

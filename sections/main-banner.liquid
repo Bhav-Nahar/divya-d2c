@@ -1,0 +1,302 @@
+{%- liquid
+  assign s = section.settings
+  assign mobile_image = s.image_mobile | default: s.image
+
+  # Desktop size is either an aspect ratio or a screen height — one dropdown, two modes.
+  assign desktop_ratio = s.ratio_desktop
+  assign desktop_height = 'auto'
+  if s.ratio_desktop contains 'svh'
+    assign desktop_ratio = 'auto'
+    assign desktop_height = s.ratio_desktop
+  endif
+-%}
+
+<div
+  class="main-banner main-banner--{{ s.text_position }} section--{{ s.section_width }}"
+  style="
+    --banner-ratio-mobile: {{ s.ratio_mobile }};
+    --banner-ratio-desktop: {{ desktop_ratio }};
+    --banner-height-desktop: {{ desktop_height }};
+    --banner-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+    --banner-text: {{ s.text_color }};
+  "
+>
+  {%- if s.link != blank and s.button_label == blank -%}
+    <a class="main-banner__cover-link" href="{{ s.link }}" aria-label="{{ s.heading | strip_html }}"></a>
+  {%- endif -%}
+
+  <div class="main-banner__media">
+    {%- if s.image != blank -%}
+      <picture>
+        <source
+          media="(max-width: 749px)"
+          srcset="
+            {{ mobile_image | image_url: width: 750 }} 750w,
+            {{ mobile_image | image_url: width: 1080 }} 1080w,
+            {{ mobile_image | image_url: width: 1500 }} 1500w
+          "
+          sizes="100vw"
+        >
+        {{
+          s.image
+          | image_url: width: 3000
+          | image_tag:
+            widths: '750,1100,1500,2000,2400,3000',
+            sizes: '100vw',
+            loading: 'eager',
+            fetchpriority: 'high',
+            alt: s.image.alt | default: s.heading | strip_html
+        }}
+      </picture>
+    {%- else -%}
+      {{ 'lifestyle-1' | placeholder_svg_tag: 'main-banner__placeholder' }}
+    {%- endif -%}
+  </div>
+
+  {%- if s.heading != blank or s.subheading != blank or s.button_label != blank -%}
+    <div class="main-banner__content">
+      {%- if s.subheading != blank -%}
+        <p class="main-banner__subheading">{{ s.subheading }}</p>
+      {%- endif -%}
+      {%- if s.heading != blank -%}
+        <h2 class="main-banner__heading {{ s.heading_level }}">{{ s.heading }}</h2>
+      {%- endif -%}
+      {%- if s.button_label != blank -%}
+        <a class="main-banner__button" href="{{ s.link | default: '#' }}">{{ s.button_label }}</a>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+  .main-banner {
+    position: relative;
+    display: grid;
+    isolation: isolate;
+  }
+
+  .main-banner__media,
+  .main-banner__content {
+    grid-area: 1 / 1;
+  }
+
+  .main-banner__media {
+    aspect-ratio: var(--banner-ratio-mobile);
+    overflow: hidden;
+  }
+
+  .main-banner__media :is(img, svg) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .main-banner__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / var(--banner-overlay));
+    pointer-events: none;
+  }
+
+  /* Sits above the overlay and the cover link so the CTA stays clickable. */
+  .main-banner__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding: var(--padding-lg, 1.5rem);
+    color: var(--banner-text);
+    pointer-events: none;
+  }
+
+  .main-banner--center .main-banner__content {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .main-banner--bottom-center .main-banner__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .main-banner:is(.main-banner--center, .main-banner--bottom-center) .main-banner__button {
+    align-self: center;
+  }
+
+  .main-banner__cover-link {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+  }
+
+  .main-banner__subheading {
+    margin: 0;
+    color: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+
+  .main-banner__heading {
+    margin: 0;
+    color: inherit;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .main-banner__button {
+    pointer-events: auto;
+    display: inline-block;
+    align-self: start;
+    margin-block-start: 0.5rem;
+    padding: 0.75rem 2rem;
+    border: 1px solid currentcolor;
+    color: inherit;
+    text-decoration: none;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media screen and (min-width: 750px) {
+    .main-banner__media {
+      aspect-ratio: var(--banner-ratio-desktop);
+      height: var(--banner-height-desktop);
+    }
+
+    .main-banner__content {
+      padding: var(--padding-2xl, 4rem);
+      gap: 1rem;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Main banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Desktop image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Falls back to the desktop image."
+    },
+    {
+      "type": "select",
+      "id": "ratio_mobile",
+      "label": "Mobile ratio",
+      "options": [
+        { "value": "1 / 1", "label": "1:1 square" },
+        { "value": "4 / 5", "label": "4:5 portrait" },
+        { "value": "3 / 4", "label": "3:4 tall" },
+        { "value": "16 / 9", "label": "16:9 wide" }
+      ],
+      "default": "4 / 5"
+    },
+    {
+      "type": "select",
+      "id": "ratio_desktop",
+      "label": "Desktop size",
+      "options": [
+        { "value": "40svh", "label": "Screen height — small" },
+        { "value": "55svh", "label": "Screen height — medium" },
+        { "value": "65svh", "label": "Screen height — theme default" },
+        { "value": "80svh", "label": "Screen height — large" },
+        { "value": "3 / 1", "label": "Ratio 3:1 band" },
+        { "value": "16 / 6", "label": "Ratio 16:6 editorial" },
+        { "value": "21 / 9", "label": "Ratio 21:9 ultrawide" },
+        { "value": "2 / 1", "label": "Ratio 2:1 cinematic" },
+        { "value": "16 / 9", "label": "Ratio 16:9 tall" }
+      ],
+      "default": "65svh"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading"
+    },
+    {
+      "type": "select",
+      "id": "heading_level",
+      "label": "Heading size",
+      "info": "Uses the theme's heading scale, set in Theme settings > Typography.",
+      "options": [
+        { "value": "h1", "label": "Extra large" },
+        { "value": "h2", "label": "Large" },
+        { "value": "h3", "label": "Medium" },
+        { "value": "h4", "label": "Small" }
+      ],
+      "default": "h1"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label"
+    },
+    {
+      "type": "url",
+      "id": "link",
+      "label": "Link",
+      "info": "With no button label the whole banner becomes the link."
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "bottom-left"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 20
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "full-width", "label": "Full" },
+        { "value": "page-width", "label": "Page" }
+      ],
+      "default": "full-width"
+    }
+  ],
+  "presets": [{ "name": "Main banner" }]
+}
+{% endschema %}

@@ -1,0 +1,14 @@
+# ponytail: whitelist — ignore everything, allow only Shopify theme dirs
+*
+!assets/
+!blocks/
+!config/
+!layout/
+!locales/
+!sections/
+!snippets/
+!templates/
+!*/**
+!.gitignore
+.DS_Store
+!shopify.theme.toml

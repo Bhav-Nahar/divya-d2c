@@ -1,0 +1,367 @@
+{%- liquid
+  assign s = section.settings
+  assign mp4 = s.video.sources | where: 'format', 'mp4' | first
+  assign poster = s.poster | default: s.video.preview_image | default: s.image
+  assign has_video = false
+  if s.media_type == 'video' and mp4 != blank
+    assign has_video = true
+  endif
+-%}
+
+<div
+  class="
+    feature-media-section section section--{{ s.section_width }} spacing-style
+    {% if s.background_color != blank %}color-custom-{{ section.id }}{% endif %}
+  "
+  style="{% render 'spacing-style', settings: s %}"
+>
+  {%- if s.background_color != blank -%}
+    {% render 'contrast-override', background_color: s.background_color, section_id: section.id %}
+  {%- endif -%}
+
+  <div
+    class="feature-media feature-media--{{ s.media_position }}"
+    style="--fm-media-width: {{ s.media_width }}fr; --fm-text-width: {{ 100 | minus: s.media_width }}fr; --fm-ratio: {{ s.ratio }}; --fm-radius: {{ s.corner_radius }}px; --fm-gap: {{ s.gap }}px;"
+  >
+    <div class="feature-media__media">
+      {%- if has_video -%}
+        {%- comment -%}
+          The <video> ships with no src — lazy-media only assigns it once the
+          element scrolls into view, so nothing downloads on page load.
+        {%- endcomment -%}
+        <lazy-media data-src="{{ mp4.url }}">
+          <video
+            class="feature-media__video"
+            muted
+            loop
+            playsinline
+            preload="none"
+            {% if poster != blank %}
+              poster="{{ poster | image_url: width: 1600 }}"
+            {% endif %}
+            aria-label="{{ s.heading | strip_html | escape }}"
+          ></video>
+        </lazy-media>
+      {%- elsif s.image != blank -%}
+        {{
+          s.image
+          | image_url: width: 1600
+          | image_tag: widths: '400,600,800,1200,1600', sizes: '(max-width: 749px) 100vw, 60vw', loading: 'lazy', alt: s.image.alt | default: s.heading
+        }}
+      {%- else -%}
+        {{ 'lifestyle-2' | placeholder_svg_tag }}
+      {%- endif -%}
+    </div>
+
+    <div class="feature-media__text feature-media__text--{{ s.text_alignment }}">
+      {%- if s.heading != blank -%}
+        <h2 class="feature-media__heading {{ s.heading_level }}">{{ s.heading }}</h2>
+      {%- endif -%}
+      {%- if s.body != blank -%}
+        <div class="feature-media__body">{{ s.body }}</div>
+      {%- endif -%}
+      {%- if s.button_label != blank -%}
+        <a class="feature-media__button" href="{{ s.button_link | default: '#' }}">{{ s.button_label }}</a>
+      {%- endif -%}
+    </div>
+  </div>
+</div>
+
+{% javascript %}
+  // ponytail: IntersectionObserver only — no scroll listeners, no polling.
+  class LazyMedia extends HTMLElement {
+    connectedCallback() {
+      this.video = this.querySelector('video');
+      if (!this.video || !this.dataset.src) return;
+
+      this.observer = new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) {
+            if (entry.isIntersecting) {
+              // Assigning src is what starts the download, so it happens here
+              // and nowhere earlier.
+              if (!this.video.src) this.video.src = this.dataset.src;
+              // Autoplay is blocked unless muted; belt and braces.
+              this.video.muted = true;
+              const played = this.video.play();
+              if (played) played.catch(() => {});
+            } else if (this.video.src) {
+              this.video.pause();
+            }
+          }
+        },
+        { rootMargin: '200px 0px' }
+      );
+
+      this.observer.observe(this);
+    }
+
+    disconnectedCallback() {
+      this.observer?.disconnect();
+    }
+  }
+
+  if (!customElements.get('lazy-media')) {
+    customElements.define('lazy-media', LazyMedia);
+  }
+{% endjavascript %}
+
+{% stylesheet %}
+  .feature-media {
+    display: grid;
+    gap: var(--fm-gap);
+    align-items: center;
+  }
+
+  .feature-media__media {
+    position: relative;
+    aspect-ratio: var(--fm-ratio);
+    overflow: hidden;
+    border-radius: var(--fm-radius);
+    background: var(--color-background-secondary, #f3f3f3);
+  }
+
+  .feature-media__media :is(img, svg, video, lazy-media) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .feature-media__text {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .feature-media__text--center {
+    text-align: center;
+    align-items: center;
+  }
+
+  .feature-media__heading {
+    margin: 0;
+    line-height: 1.2;
+    text-wrap: balance;
+  }
+
+  .feature-media__body {
+    margin: 0;
+    opacity: 0.8;
+    line-height: 1.6;
+  }
+
+  .feature-media__body > :first-child {
+    margin-block-start: 0;
+  }
+
+  .feature-media__body > :last-child {
+    margin-block-end: 0;
+  }
+
+  .feature-media__button {
+    align-self: start;
+    color: inherit;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.4em;
+  }
+
+  .feature-media__text--center .feature-media__button {
+    align-self: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .feature-media {
+      grid-template-columns: var(--fm-media-width) var(--fm-text-width);
+    }
+
+    /* Order swap rather than a second grid definition. */
+    .feature-media--right .feature-media__media {
+      order: 2;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Feature media",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "select",
+      "id": "media_type",
+      "label": "Media",
+      "options": [
+        { "value": "image", "label": "Image" },
+        { "value": "video", "label": "Video" }
+      ],
+      "default": "image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Image"
+    },
+    {
+      "type": "video",
+      "id": "video",
+      "label": "Video",
+      "info": "Loads only when scrolled into view, then plays muted on loop."
+    },
+    {
+      "type": "image_picker",
+      "id": "poster",
+      "label": "Video poster",
+      "info": "Shown before the video loads. Defaults to the video's own thumbnail."
+    },
+    {
+      "type": "select",
+      "id": "ratio",
+      "label": "Media ratio",
+      "options": [
+        { "value": "16 / 9", "label": "16:9" },
+        { "value": "4 / 3", "label": "4:3" },
+        { "value": "1 / 1", "label": "1:1" },
+        { "value": "4 / 5", "label": "4:5 portrait" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "media_position",
+      "label": "Media position",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "range",
+      "id": "media_width",
+      "label": "Media width",
+      "min": 30,
+      "max": 75,
+      "step": 5,
+      "unit": "%",
+      "default": 65
+    },
+    {
+      "type": "range",
+      "id": "gap",
+      "label": "Space between media and text",
+      "min": 0,
+      "max": 96,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "corner_radius",
+      "label": "Corner radius",
+      "min": 0,
+      "max": 32,
+      "step": 2,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Introducing the New Sixteen Stone Solitaire Ring"
+    },
+    {
+      "type": "select",
+      "id": "heading_level",
+      "label": "Heading size",
+      "info": "Uses the theme's heading scale, set in Theme settings > Typography.",
+      "options": [
+        { "value": "h1", "label": "Extra large" },
+        { "value": "h2", "label": "Large" },
+        { "value": "h3", "label": "Medium" },
+        { "value": "h4", "label": "Small" }
+      ],
+      "default": "h3"
+    },
+    {
+      "type": "richtext",
+      "id": "body",
+      "label": "Text"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Text alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Button label",
+      "default": "Shop the collection"
+    },
+    {
+      "type": "url",
+      "id": "button_link",
+      "label": "Button link"
+    },
+    {
+      "type": "header",
+      "content": "Section"
+    },
+    {
+      "type": "color_background",
+      "id": "background_color",
+      "label": "Background"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 32
+    }
+  ],
+  "presets": [{ "name": "Feature media" }]
+}
+{% endschema %}
