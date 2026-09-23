@@ -474,6 +474,7 @@
           "type": "chip",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_56_48_PM.png",
             "label": "Rings",
             "link": ""
           }
@@ -482,6 +483,7 @@
           "type": "chip",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_55_48_PM.png",
             "label": "Earrings",
             "link": ""
           }
@@ -490,6 +492,7 @@
           "type": "chip",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_54_44_PM.png",
             "label": "Bracelets",
             "link": ""
           }
@@ -498,6 +501,7 @@
           "type": "chip",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_53_15_PM.png",
             "label": "Necklaces",
             "link": ""
           }
