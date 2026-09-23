@@ -614,6 +614,7 @@
           "type": "chip",
           "settings": {
             "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_59_03_PM.png",
             "label": "Book an Appointment",
             "link": ""
           }
