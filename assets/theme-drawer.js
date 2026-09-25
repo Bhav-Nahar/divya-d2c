@@ -43,7 +43,9 @@ export class ThemeDrawer extends Component {
   #previouslyFocused = null;
 
   /** @type {MediaQueryList} */
-  #modalQuery = window.matchMedia(`(max-width: ${MODAL_BREAKPOINT - 1}px)`);
+  // ponytail: always overlay (modal + backdrop), never squeeze the page. Restore the
+  // breakpoint query to bring the desktop squeeze back.
+  #modalQuery = window.matchMedia('all');
 
   /**
    * @returns {boolean} Whether the drawer is currently open.

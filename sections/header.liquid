@@ -11,7 +11,7 @@
   assign search_style = 'none'
 
   if section.settings.show_search
-    assign search_style = 'modal'
+    assign search_style = 'bar'
   endif
 
   if section.settings.show_search
@@ -128,8 +128,9 @@
       endif
     endif
   endif
+  # ponytail: open search bar — desktop copy lives in the row, mobile gets its own full-width row below.
   capture search
-    render 'search', style: search_style, class: search_class, display_style: section.settings.actions_display_style
+    render 'search', style: search_style, class: 'mobile:hidden', placeholder: section.settings.search_placeholder, display_style: section.settings.actions_display_style
   endcapture
 
   # Skip drawer search under specific conditions:
@@ -145,6 +146,9 @@
     capture drawer_search
       render 'search', class: 'search-action--hidden-on-menu', style: search_style, display_style: section.settings.actions_display_style
     endcapture
+  endif
+  if search_style == 'bar'
+    assign drawer_search = ''
   endif
 
   assign show_language = section.settings.show_language
@@ -456,6 +460,12 @@
       </div>
     {% endif %}
   {% endfor %}
+
+  {% if search_style == 'bar' %}
+    <div class="header__mobile-search desktop:hidden">
+      {% render 'search', style: 'bar', placeholder: section.settings.search_placeholder %}
+    </div>
+  {% endif %}
 
   {% if navigation_bar != blank %}
     <div class="header__row header__navigation-bar-row">
@@ -1287,6 +1297,13 @@
       "id": "show_search",
       "label": "t:settings.search_icon",
       "default": true
+    },
+    {
+      "type": "text",
+      "id": "search_placeholder",
+      "label": "Search bar placeholder",
+      "default": "Search for rings, earrings…",
+      "visible_if": "{{ section.settings.show_search }}"
     },
     {
       "type": "select",

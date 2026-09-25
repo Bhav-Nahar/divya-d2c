@@ -117,7 +117,7 @@
       {% endif %}
 
       <div
-        class="products-count-wrapper"
+        class="products-count-wrapper visually-hidden"
         data-testid="products-count"
       >
         <span role="status">
@@ -279,7 +279,7 @@
             {% endif %}
             {% if block_settings.filter_style == 'horizontal' %}
               <div
-                class="products-count-wrapper"
+                class="products-count-wrapper visually-hidden"
                 data-testid="products-count"
               >
                 <span role="status">
@@ -469,6 +469,23 @@
               %}
 
               <div class="facets__filters-wrapper">
+                {% # Mobile two-pane sheet: one tab per filter group; see collection-mobile-bar. %}
+                <div class="filter-tabs" role="tablist" aria-orientation="vertical">
+                  {%- for filter in filters -%}
+                    <button
+                      type="button"
+                      role="tab"
+                      class="filter-tabs__tab"
+                      data-filter-tab="{{ forloop.index0 }}"
+                      aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+                    >
+                      {{- filter.label -}}
+                      {%- if filter.active_values.size > 0 or filter.min_value.value != null or filter.max_value.value != null -%}
+                        <span class="filter-tabs__dot" aria-hidden="true"></span>
+                      {%- endif -%}
+                    </button>
+                  {%- endfor -%}
+                </div>
                 {% assign total_active_values = 0 %}
                 {% assign is_active = false %}
 
@@ -542,6 +559,16 @@
       </div>
     </dialog>
   </theme-drawer>
+{% endif %}
+
+{% if block_settings.enable_filtering or block_settings.enable_sorting %}
+  {% render 'collection-mobile-bar',
+    results: results,
+    sort_by: sort_by,
+    active_count: total_active_values,
+    enable_filtering: block_settings.enable_filtering,
+    enable_sorting: block_settings.enable_sorting
+  %}
 {% endif %}
 
 {% stylesheet %}
@@ -1095,6 +1122,11 @@
   .facets__label,
   .products-count-wrapper {
     text-transform: var(--facet-label-transform);
+  }
+
+  /* The count is hidden (screen readers only), so whatever follows it takes over pushing Sort and grid to the right. */
+  .products-count-wrapper.visually-hidden + * {
+    margin-inline-start: auto;
   }
 
   .clear-filter {

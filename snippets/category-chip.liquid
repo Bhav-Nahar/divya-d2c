@@ -1,0 +1,43 @@
+{%- doc -%}
+  One tile/card in the category-chips section.
+
+  @param {string} url - Link target
+  @param {string} label - Visible label
+  @param {object} [image] - Image to show; placeholder when blank
+  @param {boolean} [current] - Marks the tile for the page being viewed
+  @param {boolean} [is_card] - Card style (label over the image)
+  @param {boolean} [show_arrow] - Card style arrow
+  @param {string} [attributes] - Extra attributes for the <li>, e.g. block.shopify_attributes
+{%- enddoc -%}
+
+<li class="category-chips__item{% if current %} category-chips__item--current{% endif %}" {{ attributes }}>
+  <a class="category-chips__link" href="{{ url | default: '#' }}"{% if current %} aria-current="page"{% endif %}>
+    <span class="category-chips__media">
+      {%- if image != blank -%}
+        {{
+          image
+          | image_url: width: 1000
+          | image_tag: loading: 'lazy', sizes: '(max-width: 749px) 50vw, 25vw', widths: '200,300,400,600,800,1000', alt: ''
+        }}
+      {%- else -%}
+        {{ 'collection-1' | placeholder_svg_tag }}
+      {%- endif -%}
+      {%- if is_card -%}
+        <span class="category-chips__scrim"></span>
+        <span class="category-chips__overlay">
+          <span class="category-chips__label">{{ label }}</span>
+          {%- if show_arrow -%}
+            <span class="category-chips__arrow" aria-hidden="true">
+              <svg viewBox="0 0 20 20" width="20" height="20">
+                {%- render 'icon', icon: 'arrow' -%}
+              </svg>
+            </span>
+          {%- endif -%}
+        </span>
+      {%- endif -%}
+    </span>
+    {%- unless is_card -%}
+      <span class="category-chips__label">{{ label }}</span>
+    {%- endunless -%}
+  </a>
+</li>

@@ -5,6 +5,8 @@
 {% capture children %}
   {% unless product == blank %}
     {%- assign custom_badge = product.metafields.custom.badge.value | default: product.metafields.custom.badge -%}
+    {%- # Theme settings > Badges > Show badges on product cards -%}
+    {%- if settings.show_product_badges -%}
     {%- if product.available == false or product.compare_at_price > product.price or custom_badge != blank -%}
       <div
         class="product-badges product-badges--{{ settings.badge_position }}"
@@ -36,6 +38,7 @@
           </div>
         {%- endif -%}
       </div>
+    {%- endif -%}
     {%- endif -%}
     {% if product.available and settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add', product: product, section_id: section.id %}
@@ -77,6 +80,10 @@
         {
           "value": "portrait",
           "label": "t:options.portrait"
+        },
+        {
+          "value": "near-square",
+          "label": "Near square (10:11)"
         },
         {
           "value": "square",

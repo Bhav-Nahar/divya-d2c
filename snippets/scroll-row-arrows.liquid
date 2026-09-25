@@ -1,0 +1,171 @@
+{%- doc -%}
+  Prev/next arrows for a native horizontal scroll row (mouse users can't swipe).
+  Wrap the row in <scroll-row> and render this inside it. Arrows show on desktop only,
+  and hide themselves when the row doesn't overflow or is at that end.
+
+  <scroll-row autoplay="30"> glides the row continuously at 30px/s and loops forever
+  (items are cloned once, hidden from screen readers). It pauses on hover, touch and
+  keyboard focus, while off screen, and never runs with prefers-reduced-motion.
+
+  @param {string} label - Accessible name of the row, e.g. "categories"
+
+  @example
+  <scroll-row>
+    <ul data-scroll-track>…</ul>
+    {% render 'scroll-row-arrows', label: 'reviews' %}
+  </scroll-row>
+{%- enddoc -%}
+
+<button type="button" class="scroll-row__arrow scroll-row__arrow--prev" data-scroll-step="-1" aria-label="Previous {{ label }}" hidden>
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" width="20" height="20">{%- render 'icon', icon: 'arrow' -%}</svg>
+</button>
+<button type="button" class="scroll-row__arrow scroll-row__arrow--next" data-scroll-step="1" aria-label="Next {{ label }}" hidden>
+  <svg aria-hidden="true" focusable="false" viewBox="0 0 20 20" width="20" height="20">{%- render 'icon', icon: 'arrow' -%}</svg>
+</button>
+
+{% javascript %}
+  class ScrollRow extends HTMLElement {
+    connectedCallback() {
+      this.track = this.querySelector('[data-scroll-track]');
+      if (!this.track) return;
+      this.prev = this.querySelector('[data-scroll-step="-1"]');
+      this.next = this.querySelector('[data-scroll-step="1"]');
+
+      this.addEventListener('click', (event) => {
+        const arrow = event.target.closest('[data-scroll-step]');
+        if (!arrow) return;
+        // Page by 80% of the visible width so one item stays in view for context.
+        this.track.scrollBy({ left: this.track.clientWidth * 0.8 * Number(arrow.dataset.scrollStep), behavior: 'smooth' });
+      });
+
+      this.update = this.update.bind(this);
+      this.track.addEventListener('scroll', this.update, { passive: true });
+      new ResizeObserver(this.update).observe(this.track);
+
+      if (this.hasAttribute('autoplay')) this.autoplay(Number(this.getAttribute('autoplay')) || 30);
+    }
+
+    update() {
+      const { scrollLeft, scrollWidth, clientWidth } = this.track;
+      if (this.loopWidth) {
+        // Looping: scrolling past the originals jumps back onto the identical clones' twins.
+        const width = this.loopWidth();
+        if (scrollLeft >= width) this.track.scrollLeft = scrollLeft - width;
+        if (this.prev) this.prev.hidden = scrollLeft <= 8;
+        if (this.next) this.next.hidden = scrollWidth <= clientWidth + 8;
+        return;
+      }
+      if (this.prev) this.prev.hidden = scrollLeft <= 8;
+      if (this.next) this.next.hidden = scrollLeft + clientWidth >= scrollWidth - 8; // 8px: ignore padding-only overflow
+    }
+
+    autoplay(speed) {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const items = [...this.track.children];
+      if (items.length < 2) return;
+
+      for (const item of items) {
+        const clone = item.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.inert = true;
+        clone.removeAttribute('id');
+        this.track.append(clone);
+      }
+      this.loopWidth = () => this.track.children[items.length].offsetLeft - this.track.children[0].offsetLeft;
+      // Snapping would fight the sub-pixel glide.
+      this.track.style.scrollSnapType = 'none';
+
+      let paused = false;
+      let visible = false;
+      let last = 0;
+      let position = this.track.scrollLeft;
+      const pause = () => (paused = true);
+      const resume = () => {
+        paused = false;
+        position = this.track.scrollLeft;
+        last = 0;
+      };
+
+      this.addEventListener('pointerenter', (event) => event.pointerType === 'mouse' && pause());
+      this.addEventListener('pointerleave', (event) => event.pointerType === 'mouse' && resume());
+      this.addEventListener('touchstart', () => { clearTimeout(this.resumeTimer); pause(); }, { passive: true });
+      // Let the swipe's momentum settle before gliding again.
+      this.addEventListener('touchend', () => (this.resumeTimer = setTimeout(resume, 2500)), { passive: true });
+      this.addEventListener('focusin', pause);
+      this.addEventListener('focusout', resume);
+      new IntersectionObserver(([entry]) => {
+        visible = entry.isIntersecting;
+        last = 0;
+      }).observe(this);
+
+      const step = (time) => {
+        if (!paused && visible) {
+          if (last) {
+            position += (speed * (time - last)) / 1000;
+            const width = this.loopWidth();
+            if (position >= width) position -= width;
+            this.track.scrollLeft = position;
+          }
+          last = time;
+        } else {
+          last = 0;
+        }
+        requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+  }
+
+  if (!customElements.get('scroll-row')) customElements.define('scroll-row', ScrollRow);
+{% endjavascript %}
+
+{% stylesheet %}
+  scroll-row {
+    position: relative;
+    display: block;
+  }
+
+  .scroll-row__arrow {
+    position: absolute;
+    top: var(--scroll-row-arrow-top, 50%);
+    z-index: 2;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    translate: 0 -50%;
+    border: 1px solid rgb(0 0 0 / 0.08);
+    border-radius: 50%;
+    background: rgb(255 255 255 / 0.95);
+    box-shadow: 0 2px 8px rgb(0 0 0 / 0.12);
+    color: #000;
+    cursor: pointer;
+  }
+
+  .scroll-row__arrow svg {
+    width: 1rem;
+    height: 1rem;
+    fill: currentcolor;
+  }
+
+  .scroll-row__arrow--prev {
+    inset-inline-start: -0.75rem;
+    rotate: 180deg;
+  }
+
+  .scroll-row__arrow--next {
+    inset-inline-end: -0.75rem;
+  }
+
+  .scroll-row__arrow:focus-visible {
+    outline: 2px solid currentcolor;
+    outline-offset: 2px;
+  }
+
+  @media screen and (min-width: 750px) and (hover: hover) {
+    .scroll-row__arrow:not([hidden]) {
+      display: flex;
+    }
+  }
+{% endstylesheet %}

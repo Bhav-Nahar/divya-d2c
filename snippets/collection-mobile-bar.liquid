@@ -1,0 +1,284 @@
+{%- doc -%}
+  Mobile-only bottom bar for collection/search results: Categories | Sort | Filter.
+  - Categories opens the header menu drawer.
+  - Sort opens a bottom sheet of sort options (navigates with the new sort_by, filters kept).
+  - Filter opens the existing #filters-drawer, laid out as two panes (tabs left, options right).
+
+  @param {object} results - Collection or search object (for sort options)
+  @param {string} sort_by - The active sort value
+  @param {number} active_count - Number of active filter values
+  @param {boolean} enable_filtering - Whether the Filter button is shown
+  @param {boolean} enable_sorting - Whether the Sort button is shown
+{%- enddoc -%}
+
+<div class="collection-bar" role="toolbar" aria-label="{{ 'content.filters' | t }}">
+  <button type="button" class="collection-bar__button" data-collection-bar-menu>
+    <span class="svg-wrapper" aria-hidden="true">{{ 'icon-grid-default.svg' | inline_asset_content }}</span>
+    Categories
+  </button>
+
+  {%- if enable_sorting -%}
+    <button type="button" class="collection-bar__button" on:click="#sort-drawer/open" aria-haspopup="dialog">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-menu.svg' | inline_asset_content }}</span>
+      Sort
+    </button>
+  {%- endif -%}
+
+  {%- if enable_filtering -%}
+    <button type="button" class="collection-bar__button" on:click="#filters-drawer/open" aria-haspopup="dialog">
+      <span class="svg-wrapper" aria-hidden="true">{{ 'icon-filter.svg' | inline_asset_content }}</span>
+      Filter
+      {%- if active_count > 0 -%}
+        <span class="collection-bar__count">{{ active_count }}</span>
+      {%- endif -%}
+    </button>
+  {%- endif -%}
+</div>
+
+{%- if enable_sorting -%}
+  <theme-drawer id="sort-drawer" no-persist data-skip-node-update class="color-custom-drawer">
+    <dialog ref="panel" class="theme-drawer__dialog sort-sheet" aria-labelledby="sort-drawer-heading">
+      {% render 'theme-drawer-header', title: 'Sort by', drawer_id: 'sort-drawer', heading_id: 'sort-drawer-heading' %}
+      <ul class="sort-sheet__list">
+        {%- for option in results.sort_options -%}
+          {%- assign current = false -%}
+          {%- if option.value == sort_by -%}{%- assign current = true -%}{%- endif -%}
+          <li>
+            <button
+              type="button"
+              class="sort-sheet__option"
+              data-sort-value="{{ option.value | escape }}"
+              aria-pressed="{{ current }}"
+            >
+              {{ option.name | escape }}
+              {%- if current -%}
+                <span class="svg-wrapper" aria-hidden="true">{{ 'icon-checkmark.svg' | inline_asset_content }}</span>
+              {%- endif -%}
+            </button>
+          </li>
+        {%- endfor -%}
+      </ul>
+    </dialog>
+  </theme-drawer>
+{%- endif -%}
+
+<script>
+  // ponytail: one delegated listener, so it keeps working after the theme re-renders the results.
+  if (!window.collectionBarBound) {
+    window.collectionBarBound = true;
+
+    document.addEventListener('click', (event) => {
+      if (event.target.closest('[data-collection-bar-menu]')) {
+        document.querySelector('header-drawer summary')?.click();
+        return;
+      }
+
+      const sort = event.target.closest('[data-sort-value]');
+      if (sort) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort_by', sort.dataset.sortValue);
+        url.searchParams.delete('page');
+        window.location.assign(url);
+        return;
+      }
+
+      // Two-pane filter sheet: remember the tab so it survives the drawer re-rendering after each filter change.
+      const tab = event.target.closest('[data-filter-tab]');
+      if (tab) {
+        window.collectionFilterTab = Number(tab.dataset.filterTab);
+        applyFilterTab();
+      }
+    });
+
+    function applyFilterTab() {
+      const index = window.collectionFilterTab || 0;
+      document.querySelectorAll('.facets-drawer__filters .facets__filters-wrapper').forEach((wrapper) => {
+        wrapper.querySelectorAll('[data-filter-tab]').forEach((t, i) => t.setAttribute('aria-selected', String(i === index)));
+        wrapper.querySelectorAll(':scope > .facets__item').forEach((panel, i) => panel.toggleAttribute('data-tab-active', i === index));
+      });
+    }
+
+    new MutationObserver(() => {
+      const wrapper = document.querySelector('.facets-drawer__filters .facets__filters-wrapper');
+      if (wrapper && !wrapper.querySelector(':scope > [data-tab-active]')) applyFilterTab();
+    }).observe(document.body, { childList: true, subtree: true });
+
+    applyFilterTab();
+  }
+</script>
+
+{% stylesheet %}
+  .collection-bar,
+  .filter-tabs {
+    display: none;
+  }
+
+  @media screen and (max-width: 749px) {
+    .collection-bar {
+      position: fixed;
+      inset: auto 0 0 0;
+      z-index: var(--layer-sticky, 10);
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: 1fr;
+      padding-bottom: env(safe-area-inset-bottom);
+      background: var(--color-foreground);
+      color: var(--color-background);
+    }
+
+    body:has(.collection-bar) {
+      padding-bottom: calc(56px + env(safe-area-inset-bottom));
+    }
+
+    .collection-bar__button {
+      all: unset;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 56px;
+      font-size: 0.8125rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      cursor: pointer;
+    }
+
+    .collection-bar__button + .collection-bar__button {
+      border-inline-start: 1px solid rgb(255 255 255 / 0.2);
+    }
+
+    .collection-bar__button:focus-visible {
+      outline: 2px solid currentcolor;
+      outline-offset: -4px;
+    }
+
+    .collection-bar__button .svg-wrapper {
+      width: 18px;
+      height: 18px;
+    }
+
+    .collection-bar__count {
+      display: inline-grid;
+      place-items: center;
+      min-width: 18px;
+      height: 18px;
+      padding-inline: 4px;
+      border-radius: 9px;
+      background: var(--color-background);
+      color: var(--color-foreground);
+      font-size: 0.6875rem;
+      letter-spacing: 0;
+    }
+
+    /* The old toolbar Filter button is replaced by the bar. */
+    .facets-toggle__wrapper {
+      display: none;
+    }
+
+    /* ── Sort sheet ── */
+    .sort-sheet__list {
+      margin: 0;
+      padding: 0 0 16px;
+      list-style: none;
+    }
+
+    .sort-sheet__option {
+      all: unset;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      min-height: 52px;
+      padding-inline: var(--theme-drawer-padding, 24px);
+      cursor: pointer;
+    }
+
+    .sort-sheet__option[aria-pressed='true'] {
+      font-weight: 600;
+    }
+
+    .sort-sheet__option .svg-wrapper {
+      width: 18px;
+      height: 18px;
+    }
+
+    .sort-sheet__option:focus-visible {
+      outline: 2px solid currentcolor;
+      outline-offset: -4px;
+    }
+
+    /* ── Two-pane filter sheet ── */
+    #filters-drawer .theme-drawer__dialog {
+      height: var(--sheet-max-height, 88dvh);
+    }
+
+    .facets-drawer__filters .facets__filters-wrapper {
+      display: grid;
+      grid-template-columns: minmax(120px, 38%) 1fr;
+      align-items: start;
+      min-height: 100%;
+    }
+
+    .facets-drawer__filters .filter-tabs {
+      display: flex;
+      flex-direction: column;
+      grid-column: 1;
+      grid-row: 1 / span 50;
+      align-self: stretch;
+      border-inline-end: 1px solid rgb(var(--color-foreground-rgb) / 0.1);
+    }
+
+    .filter-tabs__tab {
+      all: unset;
+      position: relative;
+      padding: 16px;
+      font-size: 0.9375rem;
+      color: rgb(var(--color-foreground-rgb) / 0.65);
+      cursor: pointer;
+    }
+
+    .filter-tabs__tab[aria-selected='true'] {
+      background: var(--color-background);
+      color: var(--color-foreground);
+      box-shadow: inset 3px 0 0 var(--color-foreground);
+    }
+
+    .filter-tabs__tab:focus-visible {
+      outline: 2px solid currentcolor;
+      outline-offset: -4px;
+    }
+
+    .filter-tabs__dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      margin-inline-start: 6px;
+      border-radius: 50%;
+      background: currentcolor;
+      vertical-align: middle;
+    }
+
+    .facets-drawer__filters .facets__filters-wrapper > .facets__item {
+      display: none;
+      grid-column: 2;
+      grid-row: 1;
+      border: none;
+    }
+
+    .facets-drawer__filters .facets__filters-wrapper > .facets__item[data-tab-active] {
+      display: block;
+    }
+
+    /* Tabs replace the accordion headers; the active pills and sort live elsewhere on mobile. */
+    .facets-drawer__filters .facets__summary,
+    .facets-drawer__filters .facets-remove,
+    .facets-drawer__filters sorting-filter-component {
+      display: none;
+    }
+
+    .facets-drawer__filters .facets__filters-wrapper > .facets__item::before {
+      content: none;
+    }
+  }
+{% endstylesheet %}

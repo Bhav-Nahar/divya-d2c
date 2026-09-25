@@ -1,0 +1,213 @@
+{%- liquid
+  assign s = section.settings
+  assign menu = s.menu
+-%}
+
+{% render 'contrast-override', background_color: s.background_color, text_color: s.text_color, section_id: section.id %}
+
+<div
+  class="footer-menu color-custom-{{ section.id }}"
+  style="--fm-bg: {{ s.background_color }}; --fm-text: {{ s.text_color }};"
+>
+  <div class="section section--page-width">
+  <div class="footer-menu__inner">
+    <div class="footer-menu__brand">
+      <a href="{{ routes.root_url }}" class="footer-menu__logo">
+        {%- assign logo = s.logo | default: settings.logo -%}
+        {%- if logo != blank -%}
+          {{ logo | image_url: width: 400 | image_tag: height: s.logo_height, alt: shop.name, loading: 'lazy' }}
+        {%- else -%}
+          {{ shop.name }}
+        {%- endif -%}
+      </a>
+      {%- if s.tagline != blank -%}
+        <p class="footer-menu__tagline">{{ s.tagline }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%}
+      Columns come straight from the Shopify menu (Online Store > Navigation):
+      a top-level item with children is a column (item = heading, children = links).
+      Top-level items without children are gathered into one column headed by the menu's name.
+    {%- endcomment -%}
+    <nav class="footer-menu__columns" aria-label="{{ menu.title | default: 'Footer' | escape }}">
+      {%- assign has_loose = false -%}
+      {%- for link in menu.links -%}
+        {%- if link.links.size > 0 -%}
+          <div class="footer-menu__column">
+            <h2 class="footer-menu__heading">
+              {%- if link.url != '#' and link.url != blank -%}
+                <a href="{{ link.url }}">{{ link.title }}</a>
+              {%- else -%}
+                {{ link.title }}
+              {%- endif -%}
+            </h2>
+            <ul class="footer-menu__list">
+              {%- for child in link.links -%}
+                <li><a href="{{ child.url }}"{% if child.current %} aria-current="page"{% endif %}>{{ child.title }}</a></li>
+              {%- endfor -%}
+            </ul>
+          </div>
+        {%- else -%}
+          {%- assign has_loose = true -%}
+        {%- endif -%}
+      {%- endfor -%}
+
+      {%- if has_loose -%}
+        <div class="footer-menu__column">
+          <h2 class="footer-menu__heading">{{ menu.title }}</h2>
+          <ul class="footer-menu__list">
+            {%- for link in menu.links -%}
+              {%- if link.links.size == 0 -%}
+                <li><a href="{{ link.url }}"{% if link.current %} aria-current="page"{% endif %}>{{ link.title }}</a></li>
+              {%- endif -%}
+            {%- endfor -%}
+          </ul>
+        </div>
+      {%- endif -%}
+
+      {%- if menu == blank and request.design_mode -%}
+        <p class="footer-menu__hint">Pick a menu in the section settings to show link columns.</p>
+      {%- endif -%}
+    </nav>
+
+    {%- if s.contact_heading != blank or s.contact != blank -%}
+      <div class="footer-menu__column footer-menu__contact">
+        {%- if s.contact_heading != blank -%}
+          <h2 class="footer-menu__heading">{{ s.contact_heading }}</h2>
+        {%- endif -%}
+        <div class="footer-menu__list rte">{{ s.contact }}</div>
+      </div>
+    {%- endif -%}
+  </div>
+  </div>
+</div>
+
+{% stylesheet %}
+  .footer-menu {
+    background: var(--fm-bg);
+    color: var(--fm-text);
+    padding-block: 56px 40px;
+  }
+
+  .footer-menu .section {
+    background: transparent;
+  }
+
+  .footer-menu__inner {
+    display: grid;
+    gap: 40px;
+    grid-column: 2;
+  }
+
+  .footer-menu a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .footer-menu a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .footer-menu__logo {
+    display: inline-block;
+    font-size: 1.5rem;
+    font-weight: 600;
+  }
+
+  .footer-menu__logo img {
+    width: auto;
+    display: block;
+  }
+
+  .footer-menu__tagline {
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+    opacity: 0.8;
+  }
+
+  .footer-menu__columns {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 32px 24px;
+  }
+
+  .footer-menu__heading {
+    margin: 0 0 1rem;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+
+  .footer-menu__list {
+    display: grid;
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+    opacity: 0.85;
+  }
+
+  .footer-menu__list p {
+    margin: 0;
+  }
+
+  @media screen and (min-width: 990px) {
+    .footer-menu__inner {
+      grid-template-columns: minmax(180px, 1fr) 4fr minmax(200px, 1.2fr);
+    }
+
+    .footer-menu__columns {
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Footer menu",
+  "class": "section-wrapper",
+  "enabled_on": { "groups": ["footer"] },
+  "settings": [
+    {
+      "type": "link_list",
+      "id": "menu",
+      "label": "Menu",
+      "default": "footer",
+      "info": "Top-level items with nested items become columns. Edit in Online Store > Navigation."
+    },
+    { "type": "header", "content": "Brand" },
+    {
+      "type": "image_picker",
+      "id": "logo",
+      "label": "Logo",
+      "info": "Falls back to the theme logo, then the store name."
+    },
+    {
+      "type": "range",
+      "id": "logo_height",
+      "label": "Logo height",
+      "min": 24,
+      "max": 160,
+      "step": 4,
+      "unit": "px",
+      "default": 64
+    },
+    { "type": "text", "id": "tagline", "label": "Tagline" },
+    { "type": "header", "content": "Contact" },
+    { "type": "text", "id": "contact_heading", "label": "Heading", "default": "Contact us" },
+    {
+      "type": "richtext",
+      "id": "contact",
+      "label": "Details",
+      "default": "<p>Email, phone and opening hours</p>"
+    },
+    { "type": "header", "content": "Colors" },
+    { "type": "color", "id": "background_color", "label": "Background", "default": "#1f1b18" },
+    { "type": "color", "id": "text_color", "label": "Text", "default": "#f4eee8" }
+  ],
+  "presets": [{ "name": "Footer menu" }]
+}
+{% endschema %}

@@ -4,12 +4,26 @@
   @param {string} [style] - The style of the search action.
   @param {string} [class] - Additional classes for the search action.
   @param {string} [display_style] - The display style ('icon' or 'text').
+  @param {string} [placeholder] - Placeholder text for the 'bar' style.
 
   @example
   {% render 'search', style: 'default', class: 'custom-class', display_style: 'icon' %}
 {%- enddoc -%}
 
-{% unless style == 'none' %}
+{% if style == 'bar' %}
+  {%- comment -%} ponytail: looks like an open input, opens the predictive search modal on click. {%- endcomment -%}
+  <search-button class="search-action search-action--bar{% if class != blank %} {{ class | strip }}{% endif %}">
+    <button
+      on:click="#search-modal/showDialog"
+      class="button-unstyled search-bar"
+      aria-label="{{ 'content.search_input_label' | t }}"
+      aria-haspopup="dialog"
+    >
+      <span class="svg-wrapper">{{ 'icon-search.svg' | inline_asset_content }}</span>
+      <span class="search-bar__placeholder">{% if placeholder != blank %}{{ placeholder }}{% else %}{{ 'content.search_input_placeholder' | t }}{% endif %}</span>
+    </button>
+  </search-button>
+{% elsif style != 'none' %}
   <search-button
     class="search-action{% if display_style == 'text' %} search-action--text{% endif %}{% if class != blank %} {{ class | strip }}{% endif %}"
   >
@@ -28,7 +42,7 @@
       </span>
     </button>
   </search-button>
-{% endunless %}
+{% endif %}
 
 {% stylesheet %}
   .search-action {
@@ -36,6 +50,48 @@
     --search-border-width: var(--style-border-width-inputs);
 
     display: flex;
+  }
+
+  .search-bar {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    min-height: 2.75rem;
+    padding-inline: 1rem;
+    border-radius: 0.5rem;
+    background: rgb(var(--color-foreground-rgb) / 0.05);
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+    font-size: 0.9375rem;
+    text-align: start;
+    cursor: text;
+  }
+
+  .search-bar:hover {
+    background: rgb(var(--color-foreground-rgb) / 0.08);
+  }
+
+  .search-bar .svg-wrapper {
+    flex: none;
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgb(var(--color-foreground-rgb));
+  }
+
+  .search-bar__placeholder {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .header__column .search-action--bar {
+    width: clamp(240px, 32vw, 520px);
+    margin-inline-end: var(--gap-md);
+  }
+
+  .header__mobile-search {
+    padding: 0 var(--padding-lg, 16px) 12px;
+    background: var(--color-background-top-row);
   }
 
   @media screen and (max-width: 749px) {

@@ -107,7 +107,7 @@
             "text": "",
             "icon": "truck",
             "icon_size": 24,
-            "icon_color": "#000000",
+            "icon_color": "#545437",
             "link": ""
           }
         },
@@ -118,7 +118,7 @@
             "text": "",
             "icon": "clipboard",
             "icon_size": 24,
-            "icon_color": "#000000",
+            "icon_color": "#545437",
             "link": ""
           }
         },
@@ -129,7 +129,7 @@
             "text": "",
             "icon": "return",
             "icon_size": 24,
-            "icon_color": "#000000",
+            "icon_color": "#545437",
             "link": ""
           }
         },
@@ -140,7 +140,7 @@
             "text": "",
             "icon": "price_tag",
             "icon_size": 24,
-            "icon_color": "#000000",
+            "icon_color": "#545437",
             "link": ""
           }
         }
@@ -342,7 +342,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "square",
+                "image_ratio": "near-square",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,

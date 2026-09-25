@@ -1,0 +1,108 @@
+{%- doc -%}
+  One overlay pattern for the whole store: side sheet on desktop, bottom sheet on mobile.
+  Covers theme drawers (cart, filters, chat) and modals (search, quick add).
+  Drawers never squeeze the page: see the modalQuery in assets/theme-drawer.js.
+
+  Inline <style> rendered last in layout/theme.liquid so it wins over the component
+  stylesheets without !important. `html` prefix lifts specificity past their [open] rules.
+{%- enddoc -%}
+
+<style>
+  :root {
+    --sheet-radius: 16px;
+    --sheet-max-height: 88dvh;
+    --sheet-side-width: min(480px, 100vw);
+    --sheet-backdrop-opacity: 0.4;
+  }
+
+  /* Same dim behind every sheet. The drawer scope leaves --backdrop-color-rgb empty. */
+  html .theme-drawer__dialog::backdrop,
+  html .dialog-modal.search-modal__content::backdrop,
+  html .dialog-modal.quick-add-modal::backdrop {
+    background: rgb(0 0 0 / var(--sheet-backdrop-opacity));
+  }
+
+  @keyframes sheet-in-bottom { from { transform: translateY(100%); } }
+  @keyframes sheet-out-bottom { to { transform: translateY(100%); } }
+  @keyframes sheet-in-right { from { transform: translateX(100%); } }
+  @keyframes sheet-out-right { to { transform: translateX(100%); } }
+
+  /* Mobile: every overlay rises from the bottom. */
+  @media screen and (max-width: 749px) {
+    html .theme-drawer__dialog,
+    html .theme-drawer__dialog[open] {
+      inset: auto 0 0 0;
+      width: 100%;
+      height: auto;
+      max-height: var(--sheet-max-height);
+      border-left: none;
+      border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+    }
+
+    html .theme-drawer__dialog--opening,
+    html .theme-drawer__dialog--opening-inline-start {
+      animation-name: sheet-in-bottom;
+    }
+
+    html .theme-drawer__dialog--closing {
+      animation-name: sheet-out-bottom;
+    }
+
+    html .dialog-modal.search-modal__content[open],
+    html .dialog-modal.quick-add-modal[open] {
+      inset: auto 0 0 0;
+      margin: auto 0 0 0;
+      width: 100%;
+      height: var(--sheet-max-height);
+      max-height: var(--sheet-max-height);
+      border-radius: var(--sheet-radius) var(--sheet-radius) 0 0;
+      animation: sheet-in-bottom var(--animation-speed, 300ms) var(--animation-easing, ease-out) forwards;
+    }
+
+    html .dialog-modal.quick-add-modal[open] {
+      height: fit-content;
+    }
+
+    html .dialog-modal.search-modal__content[open].dialog-closing,
+    html .dialog-modal.quick-add-modal[open].dialog-closing {
+      animation: sheet-out-bottom 200ms var(--animation-easing, ease-in) forwards;
+    }
+
+    /* The search modal hides its backdrop on mobile because it used to be full screen. */
+    html .search-modal__content::backdrop {
+      display: block;
+    }
+  }
+
+  /* Desktop: modals slide in from the right like the cart drawer already does. */
+  @media screen and (min-width: 750px) {
+    html .dialog-modal.search-modal__content[open],
+    html .dialog-modal.quick-add-modal[open] {
+      inset: 0 0 0 auto;
+      margin: 0;
+      width: var(--sheet-side-width);
+      height: 100dvh;
+      max-height: 100dvh;
+      border-radius: 0;
+      animation: sheet-in-right var(--animation-speed, 300ms) var(--animation-easing, ease-out) forwards;
+    }
+
+    /* ponytail: quick add keeps its two-column layout, so it needs a wider sheet. */
+    html .dialog-modal.quick-add-modal[open] {
+      width: min(760px, 100vw);
+    }
+
+    html .dialog-modal.search-modal__content[open].dialog-closing,
+    html .dialog-modal.quick-add-modal[open].dialog-closing {
+      animation: sheet-out-right 200ms var(--animation-easing, ease-in) forwards;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html .theme-drawer__dialog,
+    html .dialog-modal.search-modal__content,
+    html .dialog-modal.quick-add-modal {
+      animation-duration: 1ms !important;
+    }
+  }
+</style>

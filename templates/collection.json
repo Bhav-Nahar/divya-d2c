@@ -8,88 +8,83 @@
  * ------------------------------------------------------------
  */{
   "sections": {
-    "section": {
-      "type": "section",
+    "breadcrumbs": {
+      "type": "breadcrumbs",
+      "settings": {
+        "show_title": true,
+        "heading_level": "h3",
+        "show_count": true,
+        "show_description": true,
+        "section_width": "page-width",
+        "padding-block-start": 16,
+        "padding-block-end": 8
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
       "blocks": {
-        "text_tqQTNE": {
-          "type": "text",
-          "name": "t:names.title",
+        "review_1": {
+          "type": "review",
           "settings": {
-            "text": "<h1>{{ closest.collection.title }}</h1>",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "h2",
-            "font": "var(--font-body--family)",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "rating": 5,
+            "title": "Review title",
+            "quote": "Replace with a real customer review from this collection.",
+            "author": "Customer name",
+            "detail": "2 weeks ago"
+          }
         },
-        "text_twGGkJ": {
-          "type": "text",
-          "name": "t:names.description",
+        "review_2": {
+          "type": "review",
           "settings": {
-            "text": "{{ closest.collection.description }}",
-            "width": "fit-content",
-            "max_width": "normal",
-            "alignment": "left",
-            "type_preset": "rte",
-            "font": "var(--font-body--family)",
-            "line_height": "normal",
-            "letter_spacing": "normal",
-            "case": "none",
-            "wrap": "pretty",
-            "background": false,
-            "background_color": "#00000026",
-            "corner_radius": 0,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
-          },
-          "blocks": {}
+            "rating": 5,
+            "title": "Review title",
+            "quote": "Replace with a real customer review from this collection.",
+            "author": "Customer name",
+            "detail": "1 month ago"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Review title",
+            "quote": "Replace with a real customer review from this collection.",
+            "author": "Customer name",
+            "detail": "1 month ago"
+          }
+        },
+        "review_4": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "Review title",
+            "quote": "Replace with a real customer review from this collection.",
+            "author": "Customer name",
+            "detail": "2 months ago"
+          }
         }
       },
       "block_order": [
-        "text_tqQTNE",
-        "text_twGGkJ"
+        "review_1",
+        "review_2",
+        "review_3",
+        "review_4"
       ],
-      "name": "t:names.heading",
       "settings": {
-        "content_direction": "column",
-        "vertical_on_mobile": true,
-        "horizontal_alignment": "flex-start",
-        "vertical_alignment": "center",
-        "align_baseline": false,
-        "horizontal_alignment_flex_direction_column": "flex-start",
-        "vertical_alignment_flex_direction_column": "center",
+        "heading": "",
+        "heading_alignment": "left",
+        "heading_level": "h5",
+        "card_style": "boxed",
+        "desktop_layout": "scroll",
+        "columns": 3,
         "gap": 12,
+        "corner_radius": 12,
+        "show_stars": true,
         "section_width": "page-width",
-        "section_height_custom": 50,
-        "background_media": "none",
-        "background_color": "{{ settings.color_palette.background }}",
-        "video_position": "cover",
-        "background_image_position": "cover",
-        "border": "none",
-        "border_width": 1,
-        "border_opacity": 100,
-        "border_radius": 0,
-        "toggle_overlay": false,
-        "overlay_color": "#00000026",
-        "overlay_style": "solid",
-        "gradient_direction": "to top",
-        "padding-block-start": 48,
-        "padding-block-end": 48
+        "padding-block-start": 16,
+        "padding-block-end": 8,
+        "autoplay": true,
+        "autoplay_speed": 25
       }
     },
     "main": {
@@ -100,7 +95,7 @@
           "static": true,
           "settings": {
             "enable_filtering": true,
-            "filter_style": "horizontal",
+            "filter_style": "vertical",
             "filter_width": "centered",
             "text_label_case": "default",
             "show_swatch_label": false,
@@ -134,7 +129,7 @@
             "card-gallery": {
               "type": "_product-card-gallery",
               "settings": {
-                "image_ratio": "adapt",
+                "image_ratio": "near-square",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -204,9 +199,9 @@
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
         "product_grid_width": "centered",
-        "full_width_on_mobile": true,
-        "columns_gap_horizontal": 16,
-        "columns_gap_vertical": 24,
+        "full_width_on_mobile": false,
+        "columns_gap_horizontal": 12,
+        "columns_gap_vertical": 28,
         "padding-inline-start": 0,
         "padding-inline-end": 0,
         "background_color": "{{ settings.color_palette.background }}",
@@ -216,7 +211,8 @@
     }
   },
   "order": [
-    "section",
+    "breadcrumbs",
+    "reviews",
     "main"
   ]
 }

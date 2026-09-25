@@ -1180,6 +1180,13 @@
     "name": "t:names.badges",
     "settings": [
       {
+        "type": "checkbox",
+        "id": "show_product_badges",
+        "label": "Show badges on product cards",
+        "info": "Sold out, Sale and custom badges. Off hides all of them.",
+        "default": true
+      },
+      {
         "type": "select",
         "id": "badge_position",
         "options": [

@@ -1,0 +1,247 @@
+{%- liquid
+  assign s = section.settings
+  assign current_collection = collection
+  if template.name == 'product' and current_collection == blank
+    assign current_collection = product.collections.first
+  endif
+-%}
+
+<div class="breadcrumbs-section section section--{{ s.section_width }} spacing-style" style="{% render 'spacing-style', settings: s %}">
+  <nav class="breadcrumbs" aria-label="Breadcrumb">
+    <ol class="breadcrumbs__list">
+      <li class="breadcrumbs__item"><a href="{{ routes.root_url }}">Home</a></li>
+      {%- if template.name == 'product' -%}
+        {%- if current_collection != blank -%}
+          <li class="breadcrumbs__item"><a href="{{ current_collection.url }}">{{ current_collection.title }}</a></li>
+        {%- endif -%}
+        <li class="breadcrumbs__item" aria-current="page">{{ product.title }}</li>
+      {%- elsif current_collection != blank -%}
+        <li class="breadcrumbs__item" aria-current="page">{{ current_collection.title }}</li>
+      {%- elsif page_title != blank -%}
+        <li class="breadcrumbs__item" aria-current="page">{{ page_title }}</li>
+      {%- endif -%}
+    </ol>
+  </nav>
+
+  {%- if s.show_title and template.name == 'collection' and current_collection != blank -%}
+    <div class="breadcrumbs__title-row">
+      <h1 class="breadcrumbs__title {{ s.heading_level }}">{{ current_collection.title }}</h1>
+      {%- if s.show_count -%}
+        <span class="breadcrumbs__count">
+          {{- current_collection.products_count }}
+          {% if current_collection.products_count == 1 %}product{% else %}products{% endif -%}
+        </span>
+      {%- endif -%}
+    </div>
+
+    {%- if s.show_description and current_collection.description != blank -%}
+      {%- comment -%} ponytail: native <details> for "read more", no JS. {%- endcomment -%}
+      <details class="breadcrumbs__description">
+        <summary>
+          <span class="breadcrumbs__description-text rte">{{ current_collection.description }}</span>
+          <span class="breadcrumbs__more" aria-hidden="true"></span>
+        </summary>
+      </details>
+    {%- endif -%}
+  {%- endif -%}
+</div>
+
+{%- comment -%} Breadcrumb rich results for search engines. {%- endcomment -%}
+<script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": {{ request.origin | append: routes.root_url | json }} }
+      {%- if template.name == 'product' -%}
+        {%- if current_collection != blank -%}
+          ,{ "@type": "ListItem", "position": 2, "name": {{ current_collection.title | json }}, "item": {{ request.origin | append: current_collection.url | json }} }
+          ,{ "@type": "ListItem", "position": 3, "name": {{ product.title | json }} }
+        {%- else -%}
+          ,{ "@type": "ListItem", "position": 2, "name": {{ product.title | json }} }
+        {%- endif -%}
+      {%- elsif current_collection != blank -%}
+        ,{ "@type": "ListItem", "position": 2, "name": {{ current_collection.title | json }} }
+      {%- endif -%}
+    ]
+  }
+</script>
+
+{% stylesheet %}
+  .breadcrumbs__list {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.375rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.8125rem;
+  }
+
+  .breadcrumbs__item {
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+  }
+
+  .breadcrumbs__item + .breadcrumbs__item::before {
+    content: '/';
+    margin-inline-end: 0.375rem;
+    color: rgb(var(--color-foreground-rgb) / 0.35);
+  }
+
+  .breadcrumbs__item a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .breadcrumbs__item a:hover {
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .breadcrumbs__item[aria-current='page'] {
+    color: var(--color-foreground);
+    /* Long product names stay on one line on phones. */
+    max-width: 100%;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .breadcrumbs__title-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+    margin-block-start: 0.75rem;
+  }
+
+  .breadcrumbs__title {
+    margin: 0;
+    line-height: 1.1;
+  }
+
+  .breadcrumbs__count {
+    font-size: 0.875rem;
+    color: rgb(var(--color-foreground-rgb) / 0.6);
+  }
+
+  .breadcrumbs__description {
+    max-width: 68ch;
+    margin-block-start: 0.5rem;
+    font-size: 0.875rem;
+    color: rgb(var(--color-foreground-rgb) / 0.75);
+  }
+
+  .breadcrumbs__description summary {
+    display: block;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  .breadcrumbs__description summary::-webkit-details-marker {
+    display: none;
+  }
+
+  /* Collapsed: two lines, then a "Read more" link; open: full text, "Show less". */
+  .breadcrumbs__description:not([open]) .breadcrumbs__description-text {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .breadcrumbs__description-text > * {
+    margin: 0;
+  }
+
+  .breadcrumbs__more::after {
+    content: 'Read more';
+    display: inline-block;
+    margin-block-start: 0.25rem;
+    color: var(--color-foreground);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .breadcrumbs__description[open] .breadcrumbs__more::after {
+    content: 'Show less';
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Breadcrumbs",
+  "tag": "section",
+  "enabled_on": { "templates": ["collection", "product", "page", "search", "blog", "article"] },
+  "settings": [
+    {
+      "type": "checkbox",
+      "id": "show_title",
+      "label": "Show collection title",
+      "default": true,
+      "info": "Collection pages only."
+    },
+    {
+      "type": "select",
+      "id": "heading_level",
+      "label": "Title size",
+      "options": [
+        { "value": "h1", "label": "Extra large" },
+        { "value": "h2", "label": "Large" },
+        { "value": "h3", "label": "Medium" },
+        { "value": "h4", "label": "Small" }
+      ],
+      "default": "h3",
+      "visible_if": "{{ section.settings.show_title }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_count",
+      "label": "Show product count",
+      "default": true,
+      "visible_if": "{{ section.settings.show_title }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true,
+      "info": "Collapsed to two lines with Read more.",
+      "visible_if": "{{ section.settings.show_title }}"
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 80,
+      "step": 4,
+      "unit": "px",
+      "default": 8
+    }
+  ],
+  "presets": [{ "name": "Breadcrumbs" }]
+}
+{% endschema %}

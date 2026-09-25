@@ -54,11 +54,8 @@
         results_size: collection.products_count
       %}
 
-      {% assign products_per_page = 24 %}
-
-      {% if section.settings.enable_infinite_scroll == false %}
-        {% assign products_per_page = section.settings.products_per_page %}
-      {% endif %}
+      {% # With infinite scroll this is the batch size: first load, then each auto-loaded chunk. %}
+      {% assign products_per_page = section.settings.products_per_page %}
 
       {% paginate collection.products by products_per_page %}
         {% capture children %}
@@ -169,8 +166,8 @@
       "min": 8,
       "max": 36,
       "step": 4,
-      "default": 24,
-      "visible_if": "{{ section.settings.enable_infinite_scroll == false }}"
+      "default": 16,
+      "info": "With auto-load on, this many load first and each time you reach the bottom."
     },
     {
       "type": "header",

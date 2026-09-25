@@ -22,6 +22,24 @@
 {% render 'variant-picker-styles' %}
 {% render 'product-badges-styles' %}
 
+{% stylesheet %}
+  /* Card text: one-line title (full name stays in the link and on the product page), bold price. */
+  .product-card [ref='productTitleLink'] .text-block {
+    min-width: 0;
+  }
+
+  .product-card [ref='productTitleLink'] .text-block p {
+    margin: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .product-card product-price .price {
+    font-weight: 600;
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name": "t:names.product_card",

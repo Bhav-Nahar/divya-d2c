@@ -46,7 +46,17 @@
       </button>
     {%- endif -%}
 
-    <ul class="collection-carousel__track" data-cc-track>
+    {%- liquid
+      # ponytail: infinite loop = the slide set rendered 3x; JS keeps the view in the middle copy.
+      assign copies = 1
+      if section.blocks.size > 1
+        assign copies = 3
+      endif
+    -%}
+    <ul class="collection-carousel__track" data-cc-track data-cc-count="{{ section.blocks.size }}">
+      {%- for copy in (1..copies) -%}
+      {%- assign is_clone = false -%}
+      {%- if copies == 3 and copy != 2 -%}{%- assign is_clone = true -%}{%- endif -%}
       {%- for block in section.blocks -%}
         {%- liquid
           assign coll = block.settings.collection
@@ -55,7 +65,7 @@
           assign image = block.settings.image | default: coll.featured_image
           assign video = block.settings.video
         -%}
-        <li class="collection-carousel__slide" {{ block.shopify_attributes }}>
+        <li class="collection-carousel__slide" {% if is_clone %}aria-hidden="true" inert{% else %}{{ block.shopify_attributes }}{% endif %}>
           <a class="collection-carousel__link" href="{{ url | default: '#' }}">
             <span class="collection-carousel__media">
               {%- if video != blank -%}
@@ -101,6 +111,7 @@
             {%- endif -%}
           </a>
         </li>
+      {%- endfor -%}
       {%- endfor -%}
 
       {%- if section.blocks.size == 0 -%}
@@ -150,6 +161,19 @@
           slideRect.left - trackRect.left - (trackRect.width - slideRect.width) / 2;
       });
 
+      // Infinite loop: once scrolling settles inside a clone copy, jump one copy
+      // width back into the middle copy. Same picture, so the jump is invisible.
+      const count = Number(this.track.dataset.ccCount);
+      const slides = this.track.querySelectorAll('.collection-carousel__slide');
+      if (count > 1 && slides.length === count * 3) {
+        let timer;
+        this.track.addEventListener('scroll', () => {
+          clearTimeout(timer);
+          // ponytail: debounced scroll instead of `scrollend`, which older Safari lacks.
+          timer = setTimeout(() => this.wrap(slides, count), 120);
+        }, { passive: true });
+      }
+
       this.addEventListener('click', (event) => {
         const arrow = event.target.closest('[data-cc-step]');
         if (!arrow) return;
@@ -160,6 +184,24 @@
           left: (slide.offsetWidth + gap) * Number(arrow.dataset.ccStep),
           behavior: 'smooth',
         });
+      });
+    }
+
+    wrap(slides, count) {
+      const trackRect = this.track.getBoundingClientRect();
+      const centre = trackRect.left + trackRect.width / 2;
+      let nearest = 0;
+      let best = Infinity;
+      slides.forEach((slide, i) => {
+        const r = slide.getBoundingClientRect();
+        const d = Math.abs(r.left + r.width / 2 - centre);
+        if (d < best) { best = d; nearest = i; }
+      });
+      if (nearest >= count && nearest < count * 2) return;
+      const setWidth = slides[count].offsetLeft - slides[0].offsetLeft;
+      this.track.scrollTo({
+        left: this.track.scrollLeft + (nearest < count ? setWidth : -setWidth),
+        behavior: 'instant',
       });
     }
   }

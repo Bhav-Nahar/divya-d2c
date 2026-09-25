@@ -35,6 +35,28 @@
       >
     {% endif %}
 
+    {% comment %}
+      ponytail: browser-native prefetch on hover/press so the next page is already fetched
+      when clicked. Prefetch only (not prerender) so analytics and app scripts never run for
+      pages nobody opened. Cart, checkout, account and form-action URLs are excluded.
+    {% endcomment %}
+    <script type="speculationrules">
+      {
+        "prefetch": [
+          {
+            "where": {
+              "and": [
+                { "href_matches": "/*" },
+                { "not": { "href_matches": ["/cart*", "/checkout*", "/checkouts/*", "/account*", "/customer_authentication/*", "/*/cart*", "/*/account*", "/*\\?*add*", "/admin*"] } },
+                { "not": { "selector_matches": "[target=_blank], [download], [rel~=nofollow], [data-no-prefetch]" } }
+              ]
+            },
+            "eagerness": "moderate"
+          }
+        ]
+      }
+    </script>
+
     {%- render 'meta-tags' -%}
     {%- render 'stylesheets' -%}
     {%- render 'card-hover-effect-styles' -%}
@@ -191,5 +213,6 @@
     {% if settings.quick_add or settings.mobile_quick_add %}
       {% render 'quick-add-modal' %}
     {% endif %}
+    {% render 'sheet-styles' %}
   </body>
 </html>
