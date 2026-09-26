@@ -596,8 +596,8 @@
             "title": "Flawless finish",
             "quote": "Beautifully made and even better in person. The finish is flawless.",
             "author": "Ananya R.",
-            "detail": "Aug 2026",
-            "verified": true
+            "detail": "",
+            "verified": false
           }
         },
         "review_2": {
@@ -607,8 +607,8 @@
             "title": "Still looks new",
             "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
             "author": "Meera S.",
-            "detail": "Jul 2026",
-            "verified": true
+            "detail": "",
+            "verified": false
           }
         },
         "review_3": {
@@ -618,8 +618,8 @@
             "title": "Beautifully packed",
             "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
             "author": "Priya K.",
-            "detail": "Jun 2026",
-            "verified": true
+            "detail": "",
+            "verified": false
           }
         }
       },
@@ -630,7 +630,7 @@
       ],
       "settings": {
         "heading": "What our customers say",
-        "subheading": "Rated 4.9 out of 5 by customers across India.",
+        "subheading": "",
         "heading_alignment": "center",
         "heading_level": "h2",
         "card_style": "plain",
