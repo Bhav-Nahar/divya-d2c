@@ -217,7 +217,7 @@
                           assign should_render_clear = false
                         endif
 
-                        render 'price-filter', filter: filter, filter_style: block_settings.filter_style, should_render_clear: should_render_clear, id_prefix: 'horizontal'
+                        render 'price-filter', filter: filter, filter_style: block_settings.filter_style, should_render_clear: should_render_clear, id_prefix: 'horizontal', is_first: forloop.first
                       -%}
                     {% else %}
                       {% liquid
@@ -232,7 +232,7 @@
                         else
                           assign should_render_clear = false
                         endif
-                        render 'list-filter', filter: filter, filter_style: block_settings.filter_style, active_value_count: active_value_count, should_render_clear: should_render_clear, show_swatch_label: block_settings.show_swatch_label, sectionId: section.id
+                        render 'list-filter', filter: filter, filter_style: block_settings.filter_style, active_value_count: active_value_count, should_render_clear: should_render_clear, show_swatch_label: block_settings.show_swatch_label, sectionId: section.id, is_first: forloop.first
                       %}
                   {% endcase %}
                 {%- endfor -%}
@@ -498,7 +498,7 @@
                           assign is_active = true
                         endif
 
-                        render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false, id_prefix: 'dialog'
+                        render 'price-filter', filter: filter, filter_style: 'vertical', should_render_clear: false, id_prefix: 'dialog', is_first: true
                       -%}
                     {% else %}
                       {% liquid
@@ -508,7 +508,7 @@
 
                         assign active_value_count = filter.active_values | size
                         assign total_active_values = total_active_values | plus: active_value_count
-                        render 'list-filter', filter: filter, filter_style: 'vertical', active_value_count: active_value_count, should_render_clear: false, in_drawer: true, sectionId: section.id
+                        render 'list-filter', filter: filter, filter_style: 'vertical', active_value_count: active_value_count, should_render_clear: false, in_drawer: true, sectionId: section.id, is_first: true
                       %}
                   {% endcase %}
                 {%- endfor -%}
@@ -852,6 +852,25 @@
 
     &:hover {
       --icon-opacity: 1;
+    }
+  }
+
+  /*
+   * The sidebar sits beside the product grid, so its headings stay small:
+   * at h5 they competed with the collection title.
+   */
+  @media screen and (min-width: 750px) {
+    .facets--vertical .facets__summary {
+      font-size: 0.9375rem;
+      font-weight: 500;
+    }
+
+    .facets--vertical .facets__panel-content {
+      font-size: 0.875rem;
+    }
+
+    .facets--vertical .price-facet__input {
+      font-size: 0.875rem;
     }
   }
 
@@ -1229,10 +1248,19 @@
     display: none;
   }
 
+  /*
+   * A quiet label, not a second page heading: the collection title should stay
+   * the only large type at the top of the list.
+   */
   .facets--filters-title {
     margin-block-end: 0;
-    color: var(--color-foreground);
+    color: rgb(var(--color-foreground-rgb) / 0.55);
     height: fit-content;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    line-height: 1;
 
     @media screen and (max-width: 749px) {
       display: none;

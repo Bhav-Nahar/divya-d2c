@@ -25,7 +25,15 @@
     {% case section.settings.layout_type %}
       {% when 'grid' %}
         .product-grid--{{ section.id }}:is(.product-grid--grid) {
-          --product-grid-columns-desktop: repeat(auto-fill, minmax({{ product_card_size }}, 1fr));
+          {%- comment -%}
+            A fixed count keeps the row consistent on wide screens, where auto-fill
+            would otherwise add another column.
+          {%- endcomment -%}
+          {% if section.settings.desktop_columns != blank and section.settings.desktop_columns != 'auto' %}
+            --product-grid-columns-desktop: repeat({{ section.settings.desktop_columns }}, 1fr);
+          {% else %}
+            --product-grid-columns-desktop: repeat(auto-fill, minmax({{ product_card_size }}, 1fr));
+          {% endif %}
         }
 
 

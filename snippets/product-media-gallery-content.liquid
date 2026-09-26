@@ -25,6 +25,18 @@
   ></script>
 {%- endif -%}
 {%- liquid
+  assign show_scroll_counter = false
+  if media_presentation == 'grid' and block_settings.media_columns == 'two' and block_settings.sticky_first_image and block_settings.large_first_image != true
+    assign show_scroll_counter = true
+  endif
+-%}
+{%- if show_scroll_counter -%}
+  <script
+    src="{{ 'gallery-scroll-counter.js' | asset_url }}"
+    type="module"
+  ></script>
+{%- endif -%}
+{%- liquid
   assign selected_product = closest.product
   assign selected_variant_media = selected_product.selected_or_first_available_variant.featured_media
   assign first_3d_model = selected_product.media | where: 'media_type', 'model' | first
@@ -193,6 +205,16 @@
       --media-preview-ratio: {{ block_settings.aspect_ratio }};
     }
 
+    {% if block_settings.mobile_aspect_ratio != blank %}
+      /* Taller crop on small screens; the zoom dialog keeps the desktop ratio. */
+      @media screen and (max-width: 749px) {
+        .product-media-container:not(.dialog-zoomed-gallery *) {
+          --media-preview-ratio: {{ block_settings.mobile_aspect_ratio }};
+          --gallery-aspect-ratio: {{ block_settings.mobile_aspect_ratio }};
+        }
+      }
+    {% endif %}
+
     {% if block_settings.constrain_to_viewport %}
       .product-media-container.constrain-height {
         background-color: var(--color-background);
@@ -346,6 +368,7 @@
       {% if media_presentation == 'grid' %}
         media-gallery--{{ block_settings.media_columns }}-column
         {% if block_settings.media_columns == "two" and block_settings.large_first_image%}media-gallery--large-first-image{% endif %}
+        {% if block_settings.media_columns == "two" and block_settings.sticky_first_image and block_settings.large_first_image != true %}media-gallery--sticky-first-image{% endif %}
       {% endif %}
       media-gallery--{{ media_presentation }}
       {% if block_settings.slideshow_mobile_controls_style == 'hint' %}
@@ -491,6 +514,12 @@
             {% else %}
               {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: forloop.first -%}
             {% endif %}
+            {%- if show_scroll_counter and forloop.first -%}
+              <gallery-scroll-counter class="gallery-counter" aria-hidden="true">
+                <span class="gallery-counter__current" data-gallery-counter-current>01</span>
+                <span class="gallery-counter__total">{{ sorted_media.size | prepend: '0' | slice: -2, 2 }}</span>
+              </gallery-scroll-counter>
+            {%- endif -%}
           </li>
         {% endfor %}
       </ul>
@@ -576,7 +605,7 @@
                 {% endif %}
               >
                 {% if media.media_type == 'image' %}
-                  <drag-zoom-wrapper class="product-media__drag-zoom-wrapper">
+                  <drag-zoom-wrapper class="product-media__drag-zoom-wrapper" on:click="/toggleZoom">
                     {%- render 'product-media',
                       media: media,
                       sizes: '100vw',

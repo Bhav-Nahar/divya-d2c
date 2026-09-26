@@ -6,8 +6,7 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */
-{
+ */{
   "sections": {
     "category_chips": {
       "type": "category-chips",
@@ -69,7 +68,7 @@
         "visibility": "mobile",
         "mobile_columns": 2,
         "desktop_columns": 5,
-        "ratio": "4 / 5",
+        "ratio": "3 / 4",
         "corner_radius": 12,
         "label_alignment": "left",
         "show_arrow": true,
@@ -342,7 +341,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "near-square",
+                "image_ratio": "portrait-tall",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -522,7 +521,7 @@
         "visibility": "both",
         "mobile_columns": 2,
         "desktop_columns": 4,
-        "ratio": "4 / 5",
+        "ratio": "3 / 4",
         "corner_radius": 12,
         "label_alignment": "left",
         "show_arrow": true,
@@ -544,7 +543,7 @@
         "corner_radius": 0,
         "heading": "Introducing the New Sixteen Stone Solitaire Ring",
         "heading_level": "h3",
-        "body": "<p>A detachable ring and bracelet in one — reimagined from our original band and solitaire designs into a single striking piece.</p>",
+        "body": "<p>A detachable ring and bracelet in one \u2014 reimagined from our original band and solitaire designs into a single striking piece.</p>",
         "text_alignment": "center",
         "button_label": "Shop the collection",
         "button_link": "",
