@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "category_chips": {
       "type": "category-chips",
@@ -74,6 +75,8 @@
         "show_arrow": true,
         "shape": "circle",
         "size": 96,
+        "desktop_layout": "grid",
+        "size_desktop": 120,
         "section_width": "page-width",
         "padding-block-start": 32,
         "padding-block-end": 32
@@ -527,6 +530,8 @@
         "show_arrow": true,
         "shape": "square",
         "size": 96,
+        "desktop_layout": "grid",
+        "size_desktop": 120,
         "section_width": "page-width",
         "padding-block-start": 32,
         "padding-block-end": 32
@@ -543,7 +548,7 @@
         "corner_radius": 0,
         "heading": "Introducing the New Sixteen Stone Solitaire Ring",
         "heading_level": "h3",
-        "body": "<p>A detachable ring and bracelet in one \u2014 reimagined from our original band and solitaire designs into a single striking piece.</p>",
+        "body": "<p>A detachable ring and bracelet in one — reimagined from our original band and solitaire designs into a single striking piece.</p>",
         "text_alignment": "center",
         "button_label": "Shop the collection",
         "button_link": "",
@@ -556,11 +561,57 @@
     "video_reels": {
       "type": "video-reels",
       "blocks": {
-        "reel_1": { "type": "reel", "settings": {} },
-        "reel_2": { "type": "reel", "settings": {} },
-        "reel_3": { "type": "reel", "settings": {} },
-        "reel_4": { "type": "reel", "settings": {} },
-        "reel_5": { "type": "reel", "settings": {} }
+        "reel_1": {
+          "type": "reel",
+          "settings": {
+            "video": "shopify://files/videos/WhatsApp Video 2026-09-21 at 6.28.06 PM.mp4",
+            "video_url": "",
+            "caption": "",
+            "product_1": "earring",
+            "product_2": "guyot-stud",
+            "product_3": ""
+          }
+        },
+        "reel_2": {
+          "type": "reel",
+          "settings": {
+            "video_url": "",
+            "caption": "",
+            "product_1": "",
+            "product_2": "",
+            "product_3": ""
+          }
+        },
+        "reel_3": {
+          "type": "reel",
+          "settings": {
+            "video_url": "",
+            "caption": "",
+            "product_1": "",
+            "product_2": "",
+            "product_3": ""
+          }
+        },
+        "reel_4": {
+          "type": "reel",
+          "settings": {
+            "video_url": "",
+            "caption": "",
+            "product_1": "",
+            "product_2": "",
+            "product_3": ""
+          }
+        },
+        "reel_5": {
+          "type": "reel",
+          "settings": {
+            "video_url": "",
+            "caption": "",
+            "product_1": "",
+            "product_2": "",
+            "product_3": ""
+          }
+        }
       },
       "block_order": [
         "reel_1",
@@ -633,12 +684,17 @@
         "subheading": "Rated 4.9 out of 5 by customers across India.",
         "heading_alignment": "center",
         "heading_level": "h2",
+        "card_text_size": "regular",
         "card_style": "plain",
+        "desktop_layout": "grid",
+        "autoplay": false,
+        "autoplay_speed": 30,
         "columns": 3,
         "gap": 24,
         "corner_radius": 0,
         "ratio": "1 / 1",
         "show_stars": true,
+        "star_color": "",
         "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 32,
@@ -685,6 +741,8 @@
         "show_arrow": false,
         "shape": "square",
         "size": 96,
+        "desktop_layout": "grid",
+        "size_desktop": 120,
         "section_width": "page-width",
         "padding-block-start": 32,
         "padding-block-end": 32
