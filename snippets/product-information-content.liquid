@@ -325,4 +325,96 @@
   body:has(#header-group #header-component[data-sticky-state='active']) .product-details.sticky-content--desktop {
     --sticky-header-offset: var(--header-height);
   }
+
+  @media screen and (max-width: 749px) {
+    /*
+     * Mobile hierarchy: the title was 32px against a 14px price, so the price
+     * read as a footnote. Pull the title back and give the price decision weight
+     * so the two sit together as the product's headline.
+     */
+    /* Beats `.text-block.h3 :is(h1,...)` from base.css, which sets the preset size. */
+    .product-details .text-block:is(.h1, .h2, .h3, .h4) h1 {
+      font-size: 1.625rem;
+      line-height: 1.15;
+      letter-spacing: -0.01em;
+      text-wrap: balance;
+    }
+
+    .product-details .price {
+      font-size: 1.25rem;
+      font-weight: 600;
+      line-height: 1.2;
+    }
+
+    /* The gallery is full-bleed on mobile, so the details need a clear break
+       from it rather than starting straight under the image. */
+    .product-details {
+      padding-block-start: 1.75rem;
+    }
+
+    /* Reserve room for the sticky buy bar so it never covers the last section.
+       Reserved always, not only while stuck, so the page never shifts. */
+    body:has(sticky-add-to-cart) main {
+      padding-block-end: 5rem;
+    }
+
+    /*
+     * Gallery pagination as a segmented bar rather than dots: 9px dots under a
+     * difference blend washed out against pale product shots, and a full-width
+     * bar also shows how far through the set you are.
+     */
+    media-gallery .slideshow-controls__dots {
+      width: 100%;
+      gap: 0.25rem;
+      padding: 0;
+      border-radius: 0;
+    }
+
+    /* The flex items are the <li> wrappers, so they carry the sizing. */
+    media-gallery .slideshow-controls__dots > li {
+      flex: 1 1 0;
+      min-width: 0;
+      display: flex;
+    }
+
+    media-gallery .slideshow-controls__dots button {
+      flex: 1 1 auto;
+      width: 100%;
+      height: 1rem;
+      margin: 0;
+      border-radius: 0;
+    }
+
+    media-gallery .slideshow-controls__dots button::after {
+      width: 100%;
+      height: 2px;
+      border-radius: 0;
+      box-shadow: none;
+      opacity: 0.25;
+      transition: opacity 0.3s ease;
+    }
+
+    media-gallery .slideshow-controls__dots button[aria-selected='true']::after {
+      opacity: 0.85;
+      box-shadow: none;
+    }
+
+    /* Arrows sit over the image, so keep them subtle until touched. */
+    media-gallery slideshow-arrows .slideshow-control {
+      opacity: 0.75;
+    }
+
+    /* Quantity is rarely changed on a phone, so give the width to Add to cart.
+       The inner control needs the width too, or it overflows the wrapper. */
+    .product-form-buttons .quantity-selector-wrapper {
+      flex: 0 0 6.75rem;
+      max-width: 6.75rem;
+      min-width: 0;
+    }
+
+    .product-form-buttons .quantity-selector-wrapper .quantity-selector {
+      width: 100%;
+      min-width: 0;
+    }
+  }
 {% endstylesheet %}

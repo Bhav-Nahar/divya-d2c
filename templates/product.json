@@ -529,8 +529,8 @@
         "divider_width": 0,
         "background_color": "",
         "section_width": "page-width",
-        "padding-block-start": 32,
-        "padding-block-end": 32
+        "padding-block-start": 40,
+        "padding-block-end": 40
       }
     },
     "reviews": {
@@ -582,8 +582,8 @@
         "show_stars": true,
         "background_color": "",
         "section_width": "page-width",
-        "padding-block-start": 32,
-        "padding-block-end": 32
+        "padding-block-start": 48,
+        "padding-block-end": 48
       }
     },
     "recently_viewed": {
@@ -784,8 +784,8 @@
         "shape": "square",
         "size": 96,
         "section_width": "page-width",
-        "padding-block-start": 32,
-        "padding-block-end": 32
+        "padding-block-start": 40,
+        "padding-block-end": 40
       }
     }
   },

@@ -80,6 +80,7 @@
   endif
 
   assign render_slideshow_arrows = false
+  assign slideshow_arrows_class = 'mobile:hidden'
 
   if selected_product.media.size <= 1
     assign slideshow_class = 'product-media-gallery__slideshow--single-media slideshow--single-media'
@@ -88,6 +89,10 @@
 
     if media_presentation == 'carousel'
       assign render_slideshow_arrows = true
+    else
+      # The grid still renders as a carousel on mobile, so the arrows belong there
+      assign render_slideshow_arrows = true
+      assign slideshow_arrows_class = 'desktop:hidden'
     endif
   endif
 
@@ -458,7 +463,7 @@
 
     {% if render_slideshow_arrows %}
       {% capture slideshow_arrows %}
-        {% render 'slideshow-arrows', class: 'mobile:hidden', icon_style: block_settings.icons_style %}
+        {% render 'slideshow-arrows', class: slideshow_arrows_class, icon_style: block_settings.icons_style %}
       {% endcapture %}
     {% endif %}
 
