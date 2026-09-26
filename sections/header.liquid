@@ -1193,6 +1193,23 @@
     font-family: var(--menu-localization-font);
     font-size: var(--menu-localization-font-size);
   }
+
+  /*
+   * Scrolled header.
+   * The page and the header share the same cream, so a stuck header had no
+   * visible edge and content appeared to slide under nothing.
+   */
+  #header-component[data-sticky-state='active'] {
+    box-shadow: 0 1px 0 rgb(var(--color-foreground-rgb) / 0.1);
+  }
+
+  @media screen and (max-width: 749px) {
+    /* The search row is part of the sticky header, so it carries the background. */
+    #header-component[data-sticky-state='active'] .header__mobile-search {
+      background: var(--color-background-top-row, var(--color-background));
+    }
+  }
+
 {% endstylesheet %}
 
 {% unless request.design_mode %}
