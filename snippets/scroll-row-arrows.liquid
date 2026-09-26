@@ -7,6 +7,13 @@
   (items are cloned once, hidden from screen readers). It pauses on hover, touch and
   keyboard focus, while off screen, and never runs with prefers-reduced-motion.
 
+  <scroll-row loop> makes the row scroll endlessly in both directions without gliding:
+  the set is copied before and after the originals so there is always somewhere to
+  wrap to, and both arrows stay available. Needs at least 3 items.
+
+  Both modes clone items, so they fire a bubbling `scroll-row:clone` event afterwards
+  for sections that need to hook up the new nodes (lazy media, observers).
+
   @param {string} label - Accessible name of the row, e.g. "categories"
 
   @example
@@ -43,10 +50,58 @@
       new ResizeObserver(this.update).observe(this.track);
 
       if (this.hasAttribute('autoplay')) this.autoplay(Number(this.getAttribute('autoplay')) || 30);
+      else if (this.hasAttribute('loop')) this.loop();
+    }
+
+    /* Copy the item set, marked so it never reaches assistive tech or tab order. */
+    cloneSet(items) {
+      return items.map((item) => {
+        const clone = item.cloneNode(true);
+        clone.setAttribute('aria-hidden', 'true');
+        clone.inert = true;
+        clone.removeAttribute('id');
+        for (const node of clone.querySelectorAll('[id]')) node.removeAttribute('id');
+        return clone;
+      });
+    }
+
+    /*
+     * Endless scrolling in both directions: with a copy of the set on either side of
+     * the originals, passing an edge lands on the identical twin one set away, so the
+     * scrollLeft correction is invisible.
+     */
+    loop() {
+      const items = [...this.track.children];
+      if (items.length < 3) return;
+
+      this.setSize = items.length;
+      this.track.prepend(...this.cloneSet(items));
+      this.track.append(...this.cloneSet(items));
+      this.looping = true;
+      this.loopWidth = () =>
+        this.track.children[this.setSize * 2].offsetLeft - this.track.children[this.setSize].offsetLeft;
+
+      // Start on the originals, one set in, so there is room to wrap backwards.
+      requestAnimationFrame(() => {
+        this.track.scrollLeft = this.track.children[this.setSize].offsetLeft - this.track.children[0].offsetLeft;
+        this.update();
+      });
+
+      this.dispatchEvent(new CustomEvent('scroll-row:clone', { bubbles: true }));
     }
 
     update() {
       const { scrollLeft, scrollWidth, clientWidth } = this.track;
+      if (this.looping) {
+        const width = this.loopWidth();
+        if (!width) return;
+        // Past either copy, hop back onto the twin in the middle set.
+        if (scrollLeft >= width * 2 - 1) this.track.scrollLeft = scrollLeft - width;
+        else if (scrollLeft <= 1) this.track.scrollLeft = scrollLeft + width;
+        if (this.prev) this.prev.hidden = false;
+        if (this.next) this.next.hidden = false;
+        return;
+      }
       if (this.loopWidth) {
         // Looping: scrolling past the originals jumps back onto the identical clones' twins.
         const width = this.loopWidth();
@@ -64,14 +119,9 @@
       const items = [...this.track.children];
       if (items.length < 2) return;
 
-      for (const item of items) {
-        const clone = item.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true');
-        clone.inert = true;
-        clone.removeAttribute('id');
-        this.track.append(clone);
-      }
+      this.track.append(...this.cloneSet(items));
       this.loopWidth = () => this.track.children[items.length].offsetLeft - this.track.children[0].offsetLeft;
+      this.dispatchEvent(new CustomEvent('scroll-row:clone', { bubbles: true }));
       // Snapping would fight the sub-pixel glide.
       this.track.style.scrollSnapType = 'none';
 
