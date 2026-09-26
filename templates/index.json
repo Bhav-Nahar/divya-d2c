@@ -553,6 +553,39 @@
         "padding-block-end": 32
       }
     },
+    "video_reels": {
+      "type": "video-reels",
+      "blocks": {
+        "reel_1": { "type": "reel", "settings": {} },
+        "reel_2": { "type": "reel", "settings": {} },
+        "reel_3": { "type": "reel", "settings": {} },
+        "reel_4": { "type": "reel", "settings": {} },
+        "reel_5": { "type": "reel", "settings": {} }
+      },
+      "block_order": [
+        "reel_1",
+        "reel_2",
+        "reel_3",
+        "reel_4",
+        "reel_5"
+      ],
+      "settings": {
+        "heading": "Styled by us",
+        "subheading": "",
+        "heading_alignment": "center",
+        "heading_level": "h2",
+        "scroll_behavior": "loop",
+        "autoplay_speed": 25,
+        "columns": 5,
+        "ratio": "9 / 16",
+        "gap": 12,
+        "corner_radius": 0,
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    },
     "reviews": {
       "type": "testimonials",
       "blocks": {
@@ -560,27 +593,33 @@
           "type": "review",
           "settings": {
             "rating": 5,
+            "title": "Flawless finish",
             "quote": "Beautifully made and even better in person. The finish is flawless.",
             "author": "Ananya R.",
-            "detail": "Verified buyer"
+            "detail": "Aug 2026",
+            "verified": true
           }
         },
         "review_2": {
           "type": "review",
           "settings": {
             "rating": 5,
+            "title": "Still looks new",
             "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
             "author": "Meera S.",
-            "detail": "Solid Gold Bracelet"
+            "detail": "Jul 2026",
+            "verified": true
           }
         },
         "review_3": {
           "type": "review",
           "settings": {
             "rating": 5,
+            "title": "Beautifully packed",
             "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
             "author": "Priya K.",
-            "detail": "Verified buyer"
+            "detail": "Jun 2026",
+            "verified": true
           }
         }
       },
@@ -591,7 +630,7 @@
       ],
       "settings": {
         "heading": "What our customers say",
-        "subheading": "",
+        "subheading": "Rated 4.9 out of 5 by customers across India.",
         "heading_alignment": "center",
         "heading_level": "h2",
         "card_style": "plain",
@@ -660,6 +699,7 @@
     "product_list_fa6P9H",
     "shop_by_category",
     "unique_design",
+    "video_reels",
     "reviews",
     "bespoke"
   ]

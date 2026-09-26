@@ -13,6 +13,15 @@
     {% render 'contrast-override', background_color: s.background_color, section_id: section.id %}
   {%- endif -%}
 
+  {%- comment -%} One star path for the whole section; each card references it. {%- endcomment -%}
+  {%- if s.show_stars -%}
+    <svg class="review-card__star-sprite" aria-hidden="true" focusable="false">
+      <symbol id="review-star-{{ section.id }}" viewBox="0 0 32 32">
+        <path d="M31.547 12a.848.848 0 00-.677-.577l-9.427-1.376-4.224-8.532a.847.847 0 00-1.516 0l-4.218 8.534-9.427 1.355a.847.847 0 00-.467 1.467l6.823 6.664-1.612 9.375a.847.847 0 001.23.893l8.428-4.434 8.432 4.432a.847.847 0 001.229-.894l-1.615-9.373 6.822-6.665a.845.845 0 00.214-.869z" />
+      </symbol>
+    </svg>
+  {%- endif -%}
+
   {%- if s.heading != blank or s.subheading != blank -%}
     <div class="testimonials__header testimonials__header--{{ s.heading_alignment }}">
       {%- if s.heading != blank -%}
@@ -28,7 +37,7 @@
   <ul
     class="testimonials testimonials--{{ s.card_style }} testimonials--desktop-{{ s.desktop_layout }} testimonials--text-{{ s.card_text_size | default: 'regular' }}"
     data-scroll-track
-    style="--tm-columns: {{ s.columns }}; --tm-gap: {{ s.gap }}px; --tm-radius: {{ s.corner_radius }}px;"
+    style="--tm-columns: {{ s.columns }}; --tm-gap: {{ s.gap }}px; --tm-radius: {{ s.corner_radius }}px;{% if s.star_color != blank %} --tm-star-color: {{ s.star_color }};{% endif %}"
   >
     {%- for block in section.blocks -%}
       {%- liquid
@@ -56,7 +65,9 @@
             {%- if s.show_stars and block.settings.rating > 0 -%}
               <span class="review-card__stars" role="img" aria-label="{{ block.settings.rating }} out of 5 stars">
                 {%- for i in (1..5) -%}
-                  <span class="review-card__star{% if i > block.settings.rating %} review-card__star--empty{% endif %}" aria-hidden="true">★</span>
+                  <svg class="review-card__star{% if i > block.settings.rating %} review-card__star--empty{% endif %}" viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+                    <use href="#review-star-{{ section.id }}"></use>
+                  </svg>
                 {%- endfor -%}
               </span>
             {%- endif -%}
@@ -80,7 +91,14 @@
                   <span class="review-card__name">{{ block.settings.author }}</span>
                 {%- endif -%}
                 {%- if block.settings.detail != blank -%}
-                  <span class="review-card__detail">{{ block.settings.detail }}</span>
+                  <span class="review-card__detail">
+                    {%- if block.settings.verified -%}
+                      <svg class="review-card__check" viewBox="0 0 16 16" aria-hidden="true" focusable="false">
+                        <path d="M8 1.25a6.75 6.75 0 1 0 0 13.5 6.75 6.75 0 0 0 0-13.5Zm3.28 5.28-4 4a.75.75 0 0 1-1.06 0l-1.75-1.75a.75.75 0 0 1 1.06-1.06l1.22 1.22 3.47-3.47a.75.75 0 0 1 1.06 1.06Z" />
+                      </svg>
+                    {%- endif -%}
+                    {{ block.settings.detail }}
+                  </span>
                 {%- endif -%}
               </span>
             </footer>
@@ -113,6 +131,19 @@
     --review-surface: light-dark(rgb(255 255 255 / 0.72), rgb(255 255 255 / 0.04));
     --review-edge: rgb(from currentcolor r g b / 0.1);
     --review-muted: rgb(from currentcolor r g b / 0.58);
+  }
+
+  /* Gold reads as "rating" instantly; --tm-star-color (set on the list) overrides it. */
+  .testimonials {
+    --review-star: var(--tm-star-color, light-dark(#b8862b, #e0b761));
+  }
+
+  /* The sprite only defines the star path — it must never take up space. */
+  .review-card__star-sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
   }
 
   .testimonials__header {
@@ -208,8 +239,31 @@
     border-radius: 0;
   }
 
+  /*
+   * Plain keeps the hanging quote as a typographic mark above the text — without
+   * a card edge to hold the eye, the quote needs something of its own.
+   */
   .testimonials--plain .review-card::before {
-    display: none;
+    position: static;
+    display: block;
+    align-self: start;
+    font-size: 2.75rem;
+    opacity: 0.22;
+    margin-block-end: -0.55em;
+  }
+
+  /* A hairline separates neighbouring plain cards so three quotes don't blur into one. */
+  @media screen and (min-width: 750px) {
+    .testimonials--plain.testimonials--desktop-grid .testimonials__item + .testimonials__item {
+      border-inline-start: 1px solid var(--review-edge);
+      padding-inline-start: var(--tm-gap);
+    }
+  }
+
+  .testimonials--plain .review-card__quote {
+    font-family: var(--font-heading--family, serif);
+    font-size: 1.0625rem;
+    line-height: 1.55;
   }
 
   @media (hover: hover) {
@@ -243,13 +297,19 @@
 
   .review-card__stars {
     display: flex;
-    gap: 2px;
-    font-size: 0.8125rem;
-    line-height: 1;
+    align-items: center;
+    gap: 3px;
+    --review-star-size: 0.875rem;
+  }
+
+  .review-card__star {
+    width: var(--review-star-size);
+    height: var(--review-star-size);
+    fill: var(--review-star);
   }
 
   .review-card__star--empty {
-    opacity: 0.22;
+    fill: rgb(from currentcolor r g b / 0.18);
   }
 
   .review-card__title {
@@ -316,9 +376,20 @@
   }
 
   .review-card__detail {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
     font-size: 0.75rem;
     line-height: 1.3;
     color: var(--review-muted);
+  }
+
+  .review-card__check {
+    flex: none;
+    width: 0.875rem;
+    height: 0.875rem;
+    fill: var(--review-star);
+    opacity: 0.85;
   }
 
   /*
@@ -345,7 +416,7 @@
   }
 
   .testimonials--text-compact .review-card__stars {
-    font-size: 0.6875rem;
+    --review-star-size: 0.75rem;
   }
 
   .testimonials--text-compact .review-card__author {
@@ -402,6 +473,10 @@
 
     .testimonials:not(.testimonials--text-compact) .review-card__quote {
       font-size: 1.0625rem;
+    }
+
+    .testimonials--plain:not(.testimonials--text-compact) .review-card__quote {
+      font-size: 1.1875rem;
     }
   }
 {% endstylesheet %}
@@ -590,6 +665,13 @@
       "default": true
     },
     {
+      "type": "color",
+      "id": "star_color",
+      "label": "Star colour",
+      "placeholder": "Gold",
+      "visible_if": "{{ section.settings.show_stars }}"
+    },
+    {
       "type": "header",
       "content": "Section"
     },
@@ -670,6 +752,13 @@
           "id": "detail",
           "label": "Date",
           "info": "Shown beside the name, e.g. 2 weeks ago or Aug 2026."
+        },
+        {
+          "type": "checkbox",
+          "id": "verified",
+          "label": "Verified buyer",
+          "default": true,
+          "info": "Shows a check beside the date."
         },
         {
           "type": "image_picker",
