@@ -25,7 +25,7 @@
     {% if filter_style == 'horizontal' %}
       data-auto-close-details="desktop"
     {% endif %}
-    {% if filter_style == 'vertical' %}
+    {% if is_vertical and is_first %}
       open
     {% endif %}
   >
@@ -178,11 +178,18 @@
     </floating-panel-component>
   </details>
 {% endcapture %}
+{%- liquid
+  # Only the first filter group is expanded on desktop; the drawer passes is_first for every group
+  assign open_on_desktop = false
+  if is_vertical and is_first
+    assign open_on_desktop = true
+  endif
+-%}
 {% render 'accordion-custom-component',
   children: accordion_children,
   class: 'facets__item',
-  open: is_vertical,
-  open_by_default_on_desktop: is_vertical,
+  open: open_on_desktop,
+  open_by_default_on_desktop: open_on_desktop,
   open_by_default_on_mobile: is_vertical,
   disable_animation_on_desktop: is_horizontal,
   close_with_escape: is_horizontal

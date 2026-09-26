@@ -91,7 +91,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "near-square",
+                "image_ratio": "portrait-tall",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -169,7 +169,8 @@
         "padding-inline-end": 0,
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 40,
-        "padding-block-end": 40
+        "padding-block-end": 40,
+        "desktop_columns": "4"
       }
     }
   },

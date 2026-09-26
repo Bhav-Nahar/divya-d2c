@@ -71,6 +71,14 @@
       "visible_if": "{{ block.settings.media_presentation == 'grid' and block.settings.media_columns == 'two' }}"
     },
     {
+      "type": "checkbox",
+      "id": "sticky_first_image",
+      "label": "Pin first image while scrolling",
+      "info": "Keeps the first image fixed in the left column while the remaining images scroll past in the right column.",
+      "default": false,
+      "visible_if": "{{ block.settings.media_presentation == 'grid' and block.settings.media_columns == 'two' and block.settings.large_first_image == false }}"
+    },
+    {
       "type": "header",
       "content": "t:content.carousel"
     },
@@ -208,6 +216,10 @@
           "label": "t:options.portrait"
         },
         {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
           "value": "1",
           "label": "t:options.square"
         },
@@ -217,6 +229,36 @@
         }
       ],
       "default": "adapt"
+    },
+    {
+      "type": "select",
+      "id": "mobile_aspect_ratio",
+      "label": "Aspect ratio (mobile)",
+      "info": "Overrides the aspect ratio above on small screens.",
+      "options": [
+        {
+          "value": "",
+          "label": "Same as desktop"
+        },
+        {
+          "value": "2/3",
+          "label": "Portrait (2:3)"
+        },
+        {
+          "value": "3/4",
+          "label": "Portrait (3:4)"
+        },
+        {
+          "value": "1/1.25",
+          "label": "t:options.portrait"
+        },
+        {
+          "value": "1",
+          "label": "t:options.square"
+        }
+      ],
+      "default": "",
+      "visible_if": "{{ block.settings.aspect_ratio != 'adapt' }}"
     },
     {
       "type": "checkbox",

@@ -49,6 +49,69 @@
     media-gallery:where(.media-gallery--grid) .media-gallery__grid {
       display: grid;
     }
+
+    /*
+     * Sticky first image: the first image stays pinned in the left column while
+     * the remaining images scroll past it in the right column.
+     */
+    .media-gallery--sticky-first-image .media-gallery__grid {
+      align-items: start;
+    }
+
+    /* If the header is sticky, pin the image underneath it rather than behind it */
+    body:has(#header-group #header-component[data-sticky-state='active']) .media-gallery--sticky-first-image {
+      --sticky-header-offset: var(--header-height);
+    }
+
+    media-gallery.media-gallery--sticky-first-image
+      .media-gallery__grid
+      .product-media-container:first-child:not(:only-child) {
+      grid-column: 1;
+      grid-row: 1 / -1;
+      position: sticky;
+      top: var(--sticky-header-offset, 0);
+      align-self: start;
+      /* Overrides the Safari full-grid-height stretch so the pinned image keeps its own ratio */
+      height: auto;
+    }
+
+    .media-gallery--sticky-first-image
+      .media-gallery__grid
+      .product-media-container:not(:first-child) {
+      grid-column: 2;
+    }
+
+    .gallery-counter {
+      display: flex;
+      align-items: center;
+      gap: var(--padding-xs, 0.5rem);
+      position: absolute;
+      bottom: var(--padding-lg, 1.5rem);
+      left: var(--padding-lg, 1.5rem);
+      z-index: var(--layer-flat);
+      font-size: var(--font-size--sm);
+      color: var(--color-foreground);
+      pointer-events: none;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .gallery-counter__current::after {
+      content: '';
+      display: inline-block;
+      width: 3px;
+      height: 3px;
+      margin-inline-start: var(--padding-xs, 0.5rem);
+      vertical-align: middle;
+      background-color: currentcolor;
+      opacity: 0.4;
+    }
+  }
+
+  /* The counter belongs to the pinned desktop layout only */
+  @media screen and (max-width: 749px) {
+    .gallery-counter {
+      display: none;
+    }
   }
 
   zoom-dialog dialog {

@@ -5,6 +5,8 @@ import { Component } from '@theme/component';
 const MIN_ZOOM = 1;
 const MAX_ZOOM = 5;
 const DEFAULT_ZOOM = 1.5;
+const DESKTOP_ZOOM = 2;
+const WHEEL_ZOOM_STEP = 0.12;
 const DOUBLE_TAP_DELAY = 300;
 const DOUBLE_TAP_DISTANCE = 50;
 const DRAG_THRESHOLD = 10;
@@ -51,6 +53,11 @@ export class DragZoomWrapper extends Component {
     return this.refs.image;
   }
 
+  /** Mobile opens slightly magnified; desktop opens at fit size and zooms on click. */
+  get #initialZoom() {
+    return isMobileBreakpoint() ? DEFAULT_ZOOM : MIN_ZOOM;
+  }
+
   connectedCallback() {
     super.connectedCallback();
     if (!this.#image) return;
@@ -58,7 +65,8 @@ export class DragZoomWrapper extends Component {
     this.#initResizeListener();
     window.addEventListener(DialogCloseEvent.eventName, this.#resetZoom);
 
-    if (!isMobileBreakpoint()) return;
+    this.#scale = this.#initialZoom;
+    this.#startScale = this.#scale;
 
     this.#initEventListeners();
     this.#updateTransform();
@@ -78,9 +86,123 @@ export class DragZoomWrapper extends Component {
     this.addEventListener('touchmove', this.#handleTouchMove, options);
     this.addEventListener('touchend', this.#handleTouchEnd, options);
 
+    // Pointer equivalents so the same zoom works with a mouse on desktop.
+    // The click itself arrives via the `on:click` attribute, which takes
+    // precedence over the parent media item's close handler.
+    this.addEventListener('pointerdown', this.#handlePointerDown, { signal });
+    this.addEventListener('pointermove', this.#handlePointerMove, { signal });
+    this.addEventListener('pointerup', this.#handlePointerUp, { signal });
+    this.addEventListener('pointercancel', this.#handlePointerUp, { signal });
+    this.addEventListener('wheel', this.#handleWheel, options);
+
+    this.#updateCursor();
+
     // Initialize transform immediately
     this.#updateTransform();
   }
+
+  /**
+   * Zoom towards a point in viewport coordinates, keeping that point stationary.
+   * @param {number} clientX
+   * @param {number} clientY
+   * @param {number} targetZoom
+   */
+  #zoomToPoint(clientX, clientY, targetZoom) {
+    const rect = this.getBoundingClientRect();
+    const oldScale = this.#scale;
+
+    this.#scale = clamp(targetZoom, MIN_ZOOM, MAX_ZOOM);
+
+    if (this.#scale <= MIN_ZOOM) {
+      this.#translate = { x: 0, y: 0 };
+      this.#hasManualZoom = false;
+    } else {
+      const distanceFromCenter = {
+        x: clientX - (rect.left + rect.width / 2),
+        y: clientY - (rect.top + rect.height / 2),
+      };
+      const scaleDelta = this.#scale / oldScale - 1.0;
+      this.#translate.x -= (distanceFromCenter.x * scaleDelta) / this.#scale;
+      this.#translate.y -= (distanceFromCenter.y * scaleDelta) / this.#scale;
+      this.#hasManualZoom = true;
+    }
+
+    this.#requestUpdateTransform();
+    this.#updateCursor();
+  }
+
+  /** Reflects the current state: zoom in, or grab to pan once magnified. */
+  #updateCursor() {
+    if (this.#scale > MIN_ZOOM) {
+      this.style.cursor = this.#isDragging ? 'grabbing' : 'grab';
+    } else {
+      this.style.cursor = 'zoom-in';
+    }
+  }
+
+  /**
+   * A plain click toggles between fit and magnified, centred on what was clicked.
+   * Bound through `on:click` so it takes precedence over the media item's close handler.
+   * @param {MouseEvent & {pointerType?: string}} event
+   */
+  toggleZoom(event) {
+    if (event.pointerType === 'touch') return;
+
+    // A click that ends a pan shouldn't also toggle the zoom
+    if (this.#hasDraggedBeyondThreshold) {
+      this.#hasDraggedBeyondThreshold = false;
+      return;
+    }
+
+    this.#zoomToPoint(event.clientX, event.clientY, this.#scale > MIN_ZOOM ? MIN_ZOOM : DESKTOP_ZOOM);
+  }
+
+  /**
+   * @param {PointerEvent} event
+   */
+  #handlePointerDown = (event) => {
+    if (event.pointerType === 'touch' || this.#scale <= MIN_ZOOM) return;
+
+    this.#startPosition = { x: event.clientX, y: event.clientY };
+    this.#startTranslate = { x: this.#translate.x, y: this.#translate.y };
+    this.#isDragging = true;
+    this.#hasDraggedBeyondThreshold = false;
+    this.setPointerCapture(event.pointerId);
+    this.#updateCursor();
+  };
+
+  /**
+   * @param {PointerEvent} event
+   */
+  #handlePointerMove = (event) => {
+    if (!this.#isDragging || event.pointerType === 'touch') return;
+    this.#processDragGesture(event);
+  };
+
+  /**
+   * @param {PointerEvent} event
+   */
+  #handlePointerUp = (event) => {
+    if (event.pointerType === 'touch' || !this.#isDragging) return;
+
+    this.#isDragging = false;
+    if (this.hasPointerCapture(event.pointerId)) this.releasePointerCapture(event.pointerId);
+    this.#requestUpdateTransform();
+    this.#updateCursor();
+  };
+
+  /**
+   * Once magnified, the wheel adjusts the zoom. At fit size it is left alone so
+   * the dialog keeps scrolling between images as before.
+   * @param {WheelEvent} event
+   */
+  #handleWheel = (event) => {
+    if (this.#scale <= MIN_ZOOM) return;
+
+    preventDefault(event);
+    const factor = event.deltaY < 0 ? 1 + WHEEL_ZOOM_STEP : 1 - WHEEL_ZOOM_STEP;
+    this.#zoomToPoint(event.clientX, event.clientY, this.#scale * factor);
+  };
 
   disconnectedCallback() {
     super.disconnectedCallback();
@@ -91,10 +213,6 @@ export class DragZoomWrapper extends Component {
   }
 
   #handleResize = () => {
-    if (!this.#initialized && isMobileBreakpoint()) {
-      this.#initEventListeners();
-    }
-
     if (this.#initialized) {
       this.#requestUpdateTransform();
     }
@@ -451,8 +569,9 @@ export class DragZoomWrapper extends Component {
    */
   #resetZoom = () => {
     // Reset scale and translation to defaults
-    this.#scale = DEFAULT_ZOOM;
-    this.#startScale = DEFAULT_ZOOM;
+    const initialZoom = this.#initialZoom;
+    this.#scale = initialZoom;
+    this.#startScale = initialZoom;
     this.#translate.x = 0;
     this.#translate.y = 0;
 
@@ -463,11 +582,13 @@ export class DragZoomWrapper extends Component {
     this.#lastTapTime = 0;
     this.#lastTapPosition = null;
     this.#hasDraggedBeyondThreshold = false;
+    this.#hasManualZoom = false;
 
     // Update CSS properties to reflect reset state
-    this.style.setProperty('--drag-zoom-scale', DEFAULT_ZOOM.toString());
+    this.style.setProperty('--drag-zoom-scale', initialZoom.toString());
     this.style.setProperty('--drag-zoom-translate-x', '0px');
     this.style.setProperty('--drag-zoom-translate-y', '0px');
+    this.#updateCursor();
   };
 
   destroy() {

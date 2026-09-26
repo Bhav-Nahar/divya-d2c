@@ -38,14 +38,15 @@
             "media_columns": "two",
             "image_gap": 4,
             "large_first_image": false,
+            "sticky_first_image": true,
             "slideshow_controls_style": "counter",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
             "thumbnail_width": 44,
             "thumbnail_radius": 0,
-            "aspect_ratio": "adapt",
-            "constrain_to_viewport": true,
-            "media_fit": "contain",
+            "aspect_ratio": "3/4",
+            "constrain_to_viewport": false,
+            "media_fit": "cover",
             "media_radius": 0,
             "extend_media": false,
             "zoom": true,
@@ -54,7 +55,8 @@
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-inline-end": 0,
+            "mobile_aspect_ratio": ""
           },
           "blocks": {}
         },
@@ -375,7 +377,7 @@
               "type": "_product-card-gallery",
               "name": "t:names.product_card_media",
               "settings": {
-                "image_ratio": "near-square",
+                "image_ratio": "portrait-tall",
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
@@ -465,10 +467,334 @@
         "padding-block-start": 48,
         "padding-block-end": 48
       }
+    },
+    "brand_trust": {
+      "type": "brand-trust",
+      "blocks": {
+        "promise_1": {
+          "type": "promise",
+          "settings": {
+            "title": "Free & Insured Shipping",
+            "text": "",
+            "icon": "truck",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_2": {
+          "type": "promise",
+          "settings": {
+            "title": "Certified Diamond & Gold Jewelry",
+            "text": "",
+            "icon": "clipboard",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_3": {
+          "type": "promise",
+          "settings": {
+            "title": "Lifetime Buyback or Exchange",
+            "text": "",
+            "icon": "return",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_4": {
+          "type": "promise",
+          "settings": {
+            "title": "15-day Money Back Guarantee",
+            "text": "",
+            "icon": "price_tag",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "promise_1",
+        "promise_2",
+        "promise_3",
+        "promise_4"
+      ],
+      "settings": {
+        "heading": "",
+        "layout": "grid",
+        "icon_position": "beside",
+        "divider_width": 0,
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Beautifully made and even better in person. The finish is flawless.",
+            "author": "Ananya R.",
+            "detail": "Verified buyer"
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
+            "author": "Meera S.",
+            "detail": "Solid Gold Bracelet"
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
+            "author": "Priya K.",
+            "detail": "Verified buyer"
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "settings": {
+        "heading": "What our customers say",
+        "subheading": "",
+        "heading_alignment": "center",
+        "heading_level": "h2",
+        "card_style": "boxed",
+        "columns": 3,
+        "gap": 20,
+        "corner_radius": 12,
+        "ratio": "1 / 1",
+        "show_stars": true,
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
+    },
+    "recently_viewed": {
+      "type": "recently-viewed-products",
+      "blocks": {
+        "text_recently_viewed": {
+          "type": "text",
+          "name": "t:names.header",
+          "settings": {
+            "text": "<h3>Recently viewed</h3>",
+            "width": "fit-content",
+            "max_width": "normal",
+            "alignment": "left",
+            "type_preset": "h4",
+            "font": "var(--font-body--family)",
+            "font_size": "1rem",
+            "line_height": "normal",
+            "letter_spacing": "normal",
+            "case": "none",
+            "wrap": "pretty",
+            "text_color": "",
+            "background": false,
+            "background_color": "#00000026",
+            "corner_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 0,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {}
+        },
+        "static-product-card": {
+          "type": "_product-card",
+          "name": "t:names.product_card",
+          "static": true,
+          "settings": {
+            "product_card_gap": 8,
+            "background_color": "",
+            "border": "none",
+            "border_width": 1,
+            "border_opacity": 100,
+            "border_color": "",
+            "border_radius": 0,
+            "padding-block-start": 0,
+            "padding-block-end": 8,
+            "padding-inline-start": 0,
+            "padding-inline-end": 0
+          },
+          "blocks": {
+            "product_card_gallery_DNizbJ": {
+              "type": "_product-card-gallery",
+              "name": "t:names.product_card_media",
+              "settings": {
+                "image_ratio": "portrait-tall",
+                "border": "none",
+                "border_width": 1,
+                "border_opacity": 100,
+                "border_color": "",
+                "border_radius": 0,
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "product_title_M7MJkb": {
+              "type": "product-title",
+              "name": "t:names.product_title",
+              "settings": {
+                "width": "100%",
+                "max_width": "normal",
+                "alignment": "left",
+                "type_preset": "rte",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "wrap": "pretty",
+                "text_color": "",
+                "background": false,
+                "background_color": "#00000026",
+                "corner_radius": 0,
+                "padding-block-start": 4,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            },
+            "price_gLWgA6": {
+              "type": "price",
+              "settings": {
+                "show_sale_price_first": true,
+                "show_installments": false,
+                "show_tax_info": false,
+                "type_preset": "h6",
+                "width": "100%",
+                "alignment": "left",
+                "font": "var(--font-body--family)",
+                "font_size": "1rem",
+                "line_height": "normal",
+                "letter_spacing": "normal",
+                "case": "none",
+                "text_color": "",
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {}
+            }
+          },
+          "block_order": [
+            "product_card_gallery_DNizbJ",
+            "product_title_M7MJkb",
+            "price_gLWgA6"
+          ]
+        }
+      },
+      "block_order": [
+        "text_recently_viewed"
+      ],
+      "name": "Recently viewed",
+      "settings": {
+        "max_products": 4,
+        "columns": 4,
+        "mobile_columns": "2",
+        "columns_gap": 12,
+        "rows_gap": 24,
+        "section_width": "page-width",
+        "gap": 28,
+        "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 48,
+        "padding-block-end": 48
+      }
+    },
+    "explore_our_range": {
+      "type": "category-chips",
+      "blocks": {
+        "tile_1": {
+          "type": "chip",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_56_48_PM.png",
+            "label": "Rings",
+            "link": ""
+          }
+        },
+        "tile_2": {
+          "type": "chip",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_55_48_PM.png",
+            "label": "Earrings",
+            "link": ""
+          }
+        },
+        "tile_3": {
+          "type": "chip",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_54_44_PM.png",
+            "label": "Bracelets",
+            "link": ""
+          }
+        },
+        "tile_4": {
+          "type": "chip",
+          "settings": {
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_53_15_PM.png",
+            "label": "Necklaces",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4"
+      ],
+      "settings": {
+        "style": "card",
+        "heading": "Explore Our Range",
+        "subheading": "Find diamond jewelry pieces that match your style.",
+        "heading_level": "h2",
+        "heading_alignment": "left",
+        "visibility": "both",
+        "mobile_columns": 2,
+        "desktop_columns": 4,
+        "ratio": "3 / 4",
+        "corner_radius": 12,
+        "label_alignment": "left",
+        "show_arrow": true,
+        "shape": "square",
+        "size": 96,
+        "section_width": "page-width",
+        "padding-block-start": 32,
+        "padding-block-end": 32
+      }
     }
   },
   "order": [
     "main",
-    "product_recommendations_qggXJq"
+    "brand_trust",
+    "reviews",
+    "product_recommendations_qggXJq",
+    "explore_our_range",
+    "recently_viewed"
   ]
 }
