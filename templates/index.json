@@ -171,7 +171,6 @@
           "type": "slide",
           "settings": {
             "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_39_58_PM.png",
             "label": "Rings",
             "cta": "Shop now",
             "link": ""
@@ -181,7 +180,6 @@
           "type": "slide",
           "settings": {
             "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_28_58_PM.png",
             "label": "Earrings",
             "cta": "Shop now",
             "link": ""
@@ -192,7 +190,7 @@
           "settings": {
             "collection": "",
             "image": "shopify://shop_images/Golden_Emerald_Necklace_Editorial.png",
-            "label": "Necklaces",
+            "label": "Solace",
             "cta": "Shop now",
             "link": ""
           }
@@ -201,8 +199,8 @@
           "type": "slide",
           "settings": {
             "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_37_19_PM.png",
-            "label": "Bracelets",
+            "image": "shopify://shop_images/Sunlit_Joy_and_Jewel_Tones.png",
+            "label": "Chroma",
             "cta": "Shop now",
             "link": ""
           }
