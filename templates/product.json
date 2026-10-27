@@ -6,7 +6,8 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "main": {
       "type": "product-information",
@@ -39,12 +40,14 @@
             "image_gap": 4,
             "large_first_image": false,
             "sticky_first_image": true,
+            "icons_style": "arrow",
             "slideshow_controls_style": "counter",
             "slideshow_mobile_controls_style": "dots",
             "thumbnail_position": "right",
             "thumbnail_width": 44,
             "thumbnail_radius": 0,
             "aspect_ratio": "3/4",
+            "mobile_aspect_ratio": "",
             "constrain_to_viewport": false,
             "media_fit": "cover",
             "media_radius": 0,
@@ -55,8 +58,7 @@
             "padding-block-start": 0,
             "padding-block-end": 0,
             "padding-inline-start": 0,
-            "padding-inline-end": 0,
-            "mobile_aspect_ratio": ""
+            "padding-inline-end": 0
           },
           "blocks": {}
         },
@@ -118,6 +120,7 @@
                 "border_opacity": 100,
                 "border_color": "",
                 "border_radius": 0,
+                "link": "",
                 "open_in_new_tab": false,
                 "placeholder": "",
                 "padding-block-start": 0,
@@ -275,12 +278,12 @@
               },
               "block_order": []
             },
-            "text_aEtTtq": {
+            "text_XQBPKj": {
               "type": "text",
-              "name": "t:names.product_description",
+              "name": "t:names.text",
               "settings": {
-                "text": "{{ closest.product.description }}",
-                "width": "100%",
+                "text": "<p><strong>Craftsmanship</strong></p>",
+                "width": "fit-content",
                 "max_width": "normal",
                 "alignment": "left",
                 "type_preset": "rte",
@@ -307,7 +310,7 @@
             "divider_VJhene",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",
-            "text_aEtTtq"
+            "text_XQBPKj"
           ]
         }
       },
@@ -324,6 +327,135 @@
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 0,
         "padding-block-end": 0
+      }
+    },
+    "brand_trust": {
+      "type": "brand-trust",
+      "blocks": {
+        "promise_1": {
+          "type": "promise",
+          "settings": {
+            "title": "Free & Insured Shipping",
+            "text": "",
+            "icon": "truck",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_2": {
+          "type": "promise",
+          "settings": {
+            "title": "Certified Diamond & Gold Jewelry",
+            "text": "",
+            "icon": "clipboard",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_3": {
+          "type": "promise",
+          "settings": {
+            "title": "Lifetime Buyback or Exchange",
+            "text": "",
+            "icon": "return",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        },
+        "promise_4": {
+          "type": "promise",
+          "settings": {
+            "title": "15-day Money Back Guarantee",
+            "text": "",
+            "icon": "price_tag",
+            "icon_size": 24,
+            "icon_color": "#545437",
+            "link": ""
+          }
+        }
+      },
+      "block_order": [
+        "promise_1",
+        "promise_2",
+        "promise_3",
+        "promise_4"
+      ],
+      "settings": {
+        "heading": "",
+        "layout": "grid",
+        "icon_position": "beside",
+        "divider_width": 0,
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "reviews": {
+      "type": "testimonials",
+      "blocks": {
+        "review_1": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "",
+            "quote": "Beautifully made and even better in person. The finish is flawless.",
+            "author": "Ananya R.",
+            "detail": "Verified buyer",
+            "verified": true
+          }
+        },
+        "review_2": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "",
+            "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
+            "author": "Meera S.",
+            "detail": "Solid Gold Bracelet",
+            "verified": true
+          }
+        },
+        "review_3": {
+          "type": "review",
+          "settings": {
+            "rating": 5,
+            "title": "",
+            "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
+            "author": "Priya K.",
+            "detail": "Verified buyer",
+            "verified": true
+          }
+        }
+      },
+      "block_order": [
+        "review_1",
+        "review_2",
+        "review_3"
+      ],
+      "settings": {
+        "heading": "What our customers say",
+        "subheading": "",
+        "heading_alignment": "center",
+        "heading_level": "h2",
+        "card_text_size": "regular",
+        "card_style": "boxed",
+        "desktop_layout": "grid",
+        "autoplay": false,
+        "autoplay_speed": 30,
+        "columns": 3,
+        "gap": 20,
+        "corner_radius": 12,
+        "ratio": "1 / 1",
+        "show_stars": true,
+        "star_color": "",
+        "background_color": "",
+        "section_width": "page-width",
+        "padding-block-start": 48,
+        "padding-block-end": 48
       }
     },
     "product_recommendations_qggXJq": {
@@ -468,122 +600,72 @@
         "padding-block-end": 48
       }
     },
-    "brand_trust": {
-      "type": "brand-trust",
+    "explore_our_range": {
+      "type": "category-chips",
       "blocks": {
-        "promise_1": {
-          "type": "promise",
+        "tile_1": {
+          "type": "chip",
           "settings": {
-            "title": "Free & Insured Shipping",
-            "text": "",
-            "icon": "truck",
-            "icon_size": 24,
-            "icon_color": "#545437",
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_56_48_PM.png",
+            "label": "Rings",
             "link": ""
           }
         },
-        "promise_2": {
-          "type": "promise",
+        "tile_2": {
+          "type": "chip",
           "settings": {
-            "title": "Certified Diamond & Gold Jewelry",
-            "text": "",
-            "icon": "clipboard",
-            "icon_size": 24,
-            "icon_color": "#545437",
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_55_48_PM.png",
+            "label": "Earrings",
             "link": ""
           }
         },
-        "promise_3": {
-          "type": "promise",
+        "tile_3": {
+          "type": "chip",
           "settings": {
-            "title": "Lifetime Buyback or Exchange",
-            "text": "",
-            "icon": "return",
-            "icon_size": 24,
-            "icon_color": "#545437",
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_54_44_PM.png",
+            "label": "Bracelets",
             "link": ""
           }
         },
-        "promise_4": {
-          "type": "promise",
+        "tile_4": {
+          "type": "chip",
           "settings": {
-            "title": "15-day Money Back Guarantee",
-            "text": "",
-            "icon": "price_tag",
-            "icon_size": 24,
-            "icon_color": "#545437",
+            "collection": "",
+            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_53_15_PM.png",
+            "label": "Necklaces",
             "link": ""
           }
         }
       },
       "block_order": [
-        "promise_1",
-        "promise_2",
-        "promise_3",
-        "promise_4"
+        "tile_1",
+        "tile_2",
+        "tile_3",
+        "tile_4"
       ],
       "settings": {
-        "heading": "",
-        "layout": "grid",
-        "icon_position": "beside",
-        "divider_width": 0,
-        "background_color": "",
+        "style": "card",
+        "heading": "Explore Our Range",
+        "subheading": "Find diamond jewelry pieces that match your style.",
+        "heading_level": "h2",
+        "heading_alignment": "left",
+        "visibility": "both",
+        "mobile_columns": 2,
+        "desktop_columns": 4,
+        "ratio": "3 / 4",
+        "corner_radius": 12,
+        "label_alignment": "left",
+        "show_arrow": true,
+        "shape": "square",
+        "size": 96,
+        "desktop_layout": "grid",
+        "size_desktop": 120,
         "section_width": "page-width",
         "padding-block-start": 40,
         "padding-block-end": 40
-      }
-    },
-    "reviews": {
-      "type": "testimonials",
-      "blocks": {
-        "review_1": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "quote": "Beautifully made and even better in person. The finish is flawless.",
-            "author": "Ananya R.",
-            "detail": "Verified buyer"
-          }
-        },
-        "review_2": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
-            "author": "Meera S.",
-            "detail": "Solid Gold Bracelet"
-          }
-        },
-        "review_3": {
-          "type": "review",
-          "settings": {
-            "rating": 5,
-            "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
-            "author": "Priya K.",
-            "detail": "Verified buyer"
-          }
-        }
-      },
-      "block_order": [
-        "review_1",
-        "review_2",
-        "review_3"
-      ],
-      "settings": {
-        "heading": "What our customers say",
-        "subheading": "",
-        "heading_alignment": "center",
-        "heading_level": "h2",
-        "card_style": "boxed",
-        "columns": 3,
-        "gap": 20,
-        "corner_radius": 12,
-        "ratio": "1 / 1",
-        "show_stars": true,
-        "background_color": "",
-        "section_width": "page-width",
-        "padding-block-start": 48,
-        "padding-block-end": 48
       }
     },
     "recently_viewed": {
@@ -720,72 +802,6 @@
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 48,
         "padding-block-end": 48
-      }
-    },
-    "explore_our_range": {
-      "type": "category-chips",
-      "blocks": {
-        "tile_1": {
-          "type": "chip",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_56_48_PM.png",
-            "label": "Rings",
-            "link": ""
-          }
-        },
-        "tile_2": {
-          "type": "chip",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_55_48_PM.png",
-            "label": "Earrings",
-            "link": ""
-          }
-        },
-        "tile_3": {
-          "type": "chip",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_54_44_PM.png",
-            "label": "Bracelets",
-            "link": ""
-          }
-        },
-        "tile_4": {
-          "type": "chip",
-          "settings": {
-            "collection": "",
-            "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_04_53_15_PM.png",
-            "label": "Necklaces",
-            "link": ""
-          }
-        }
-      },
-      "block_order": [
-        "tile_1",
-        "tile_2",
-        "tile_3",
-        "tile_4"
-      ],
-      "settings": {
-        "style": "card",
-        "heading": "Explore Our Range",
-        "subheading": "Find diamond jewelry pieces that match your style.",
-        "heading_level": "h2",
-        "heading_alignment": "left",
-        "visibility": "both",
-        "mobile_columns": 2,
-        "desktop_columns": 4,
-        "ratio": "3 / 4",
-        "corner_radius": 12,
-        "label_alignment": "left",
-        "show_arrow": true,
-        "shape": "square",
-        "size": 96,
-        "section_width": "page-width",
-        "padding-block-start": 40,
-        "padding-block-end": 40
       }
     }
   },
