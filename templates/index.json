@@ -105,7 +105,7 @@
         "promise_1": {
           "type": "promise",
           "settings": {
-            "title": "Free & Insured Shipping",
+            "title": "Certified Gemstones & 925 Silver",
             "text": "",
             "icon": "truck",
             "icon_size": 24,
@@ -116,7 +116,7 @@
         "promise_2": {
           "type": "promise",
           "settings": {
-            "title": "Certified Diamond & Gold Jewelry",
+            "title": "Handcrafted with Precision",
             "text": "",
             "icon": "clipboard",
             "icon_size": 24,
@@ -127,7 +127,7 @@
         "promise_3": {
           "type": "promise",
           "settings": {
-            "title": "Lifetime Buyback or Exchange",
+            "title": "15-Day Money Back",
             "text": "",
             "icon": "return",
             "icon_size": 24,
@@ -138,7 +138,7 @@
         "promise_4": {
           "type": "promise",
           "settings": {
-            "title": "15-day Money Back Guarantee",
+            "title": "Lifetime Care & Support",
             "text": "",
             "icon": "price_tag",
             "icon_size": 24,
