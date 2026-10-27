@@ -643,9 +643,9 @@
           "settings": {
             "rating": 5,
             "title": "Flawless finish",
-            "quote": "Beautifully made and even better in person. The finish is flawless.",
-            "author": "Ananya R.",
-            "detail": "Aug 2026",
+            "quote": "\"The quality is even better in person. The gemstone has such a beautiful depth to it and the finishing is impeccable.”",
+            "author": "Ananya",
+            "detail": "Dec 2026",
             "verified": true
           }
         },
@@ -653,10 +653,10 @@
           "type": "review",
           "settings": {
             "rating": 5,
-            "title": "Still looks new",
-            "quote": "Wore it every day for a month and it still looks new. Worth every rupee.",
-            "author": "Meera S.",
-            "detail": "Jul 2026",
+            "title": "One of a Kind",
+            "quote": "\"The gemstone has so much character. I love that it’s not perfectly uniform, it makes the piece feel one of a kind.\"",
+            "author": "Suman",
+            "detail": "Dec 2026",
             "verified": true
           }
         },
@@ -664,10 +664,10 @@
           "type": "review",
           "settings": {
             "rating": 5,
-            "title": "Beautifully packed",
-            "quote": "Ordering was easy and it arrived beautifully packed. Will buy again.",
-            "author": "Priya K.",
-            "detail": "Jun 2026",
+            "title": "Simple yet Striking",
+            "quote": "“The details in the design are beautiful. Minimal but still makes a statement.”",
+            "author": "Priya",
+            "detail": "Dec 2026",
             "verified": true
           }
         }
