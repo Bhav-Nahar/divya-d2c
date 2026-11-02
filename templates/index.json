@@ -178,6 +178,7 @@
         },
         "slide_2": {
           "type": "slide",
+          "disabled": true,
           "settings": {
             "collection": "",
             "label": "Earrings",
