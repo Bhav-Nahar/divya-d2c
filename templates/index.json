@@ -86,6 +86,7 @@
       "type": "main-banner",
       "settings": {
         "image": "shopify://shop_images/ChatGPT_Image_Sep_23_2026_05_04_28_PM.png",
+        "image_mobile": "shopify://shop_images/Sunlit_Gemstone_Earring_Portrait.png",
         "ratio_mobile": "4 / 5",
         "ratio_desktop": "65svh",
         "subheading": "New Collection",
