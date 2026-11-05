@@ -10,6 +10,7 @@
   @param {string} [menu] - Captured HTML for the menu navigation
   @param {string} [actions] - Captured HTML for header actions (cart, account buttons, etc.)
   @param {string} [localization] - Captured HTML for language/country selector
+  @param {string} [top_links] - Captured HTML for the quick text links (e.g. Contact us, About us)
   @param {string} [search] - Captured HTML for search input
   @param {string} [drawer_search] - Captured HTML for drawer-based search
 {% enddoc %}
@@ -78,6 +79,8 @@
               {{ logo }}
             {% when 'menu' %}
               {{ menu }}
+            {% when 'top_links' %}
+              {{ top_links }}
             {% when 'localization' %}
               {{ localization }}
             {% when 'search' %}

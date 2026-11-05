@@ -218,7 +218,22 @@
   elsif bottom_transparent
     assign background_transparent_color_value = 'bottom'
   endif
+
+  assign order = 'top_links,' | append: order
+  assign contact_url = section.settings.top_link_1_url | default: '/pages/contact'
+  assign about_url = section.settings.top_link_2_url | default: '/pages/about-us'
 %}
+
+{% capture top_links_markup %}
+  <nav class="header-top-links mobile:hidden" aria-label="Quick links">
+    {%- if section.settings.top_link_1_label != blank -%}
+      <a href="{{ contact_url }}">{{ section.settings.top_link_1_label }}</a>
+    {%- endif -%}
+    {%- if section.settings.top_link_2_label != blank -%}
+      <a href="{{ about_url }}">{{ section.settings.top_link_2_label }}</a>
+    {%- endif -%}
+  </nav>
+{% endcapture %}
 
 {% capture localization_markup %}
   {% liquid
@@ -440,6 +455,7 @@
         menu: menu,
         actions: actions,
         localization: localization_markup,
+        top_links: top_links_markup,
         search: search,
         drawer_search: drawer_search
       %}
@@ -815,6 +831,25 @@
     .overflow-menu::part(list) {
       justify-content: flex-end;
     }
+  }
+
+  .header-top-links {
+    display: flex;
+    align-items: center;
+    gap: var(--gap-xl, 1.5rem);
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .header-top-links a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .header-top-links a:hover {
+    text-decoration: underline;
+    text-underline-offset: 0.25em;
   }
 
   .header__columns {
@@ -1304,6 +1339,34 @@
       "id": "customer_account_menu",
       "label": "t:settings.menu",
       "default": "customer-account-main-menu"
+    },
+    {
+      "type": "header",
+      "content": "Top-left links"
+    },
+    {
+      "type": "text",
+      "id": "top_link_1_label",
+      "label": "Link 1 label",
+      "default": "Contact us"
+    },
+    {
+      "type": "url",
+      "id": "top_link_1_url",
+      "label": "Link 1 URL",
+      "info": "Defaults to /pages/contact."
+    },
+    {
+      "type": "text",
+      "id": "top_link_2_label",
+      "label": "Link 2 label",
+      "default": "About us"
+    },
+    {
+      "type": "url",
+      "id": "top_link_2_url",
+      "label": "Link 2 URL",
+      "info": "Defaults to /pages/about-us."
     },
     {
       "type": "header",
