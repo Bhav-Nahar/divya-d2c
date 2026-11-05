@@ -22,6 +22,11 @@
     assign gutter_style = '--gutter-slide-width: 0px;'
   endif
 
+  assign infinite_loop = false
+  if settings.infinite_loop == true
+    assign infinite_loop = true
+  endif
+
   assign show_arrows = false
   if settings.icons_style != 'none'
     assign show_arrows = true
@@ -47,7 +52,7 @@
     icon_style: settings.icons_style,
     icon_shape: settings.icons_shape,
     auto_hide_controls: false,
-    infinite: false,
+    infinite: infinite_loop,
     initial_slide: 0,
     slide_count: slide_count,
     slideshow_gutters: slideshow_gutters

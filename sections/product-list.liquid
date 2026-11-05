@@ -164,6 +164,39 @@
   })();
 </script>
 
+{% if section.settings.layout_type == 'carousel' and section.settings.infinite_loop %}
+  <script>
+    (() => {
+      const section = document.getElementById('shopify-section-{{ section.id }}');
+      const carousel = section && section.querySelector('.resource-list__carousel');
+      if (!carousel) return;
+      const edge = 4;
+      // Capture phase: at either end, wrap around instead of the default (dead) click.
+      carousel.addEventListener(
+        'click',
+        (event) => {
+          const button = event.target instanceof Element && event.target.closest('.slideshow-control');
+          const scroller = carousel.querySelector('slideshow-slides');
+          if (!button || !scroller) return;
+          const isNext = button.classList.contains('slideshow-control--next');
+          const atEnd = scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - edge;
+          const atStart = scroller.scrollLeft <= edge;
+          if (isNext && atEnd) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            scroller.scrollTo({ left: 0, behavior: 'smooth' });
+          } else if (!isNext && atStart) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            scroller.scrollTo({ left: scroller.scrollWidth, behavior: 'smooth' });
+          }
+        },
+        true
+      );
+    })();
+  </script>
+{% endif %}
+
 {% schema %}
 {
   "name": "t:names.product_list",
@@ -323,6 +356,14 @@
       ],
       "default": "arrow",
       "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "infinite_loop",
+      "label": "Loop endlessly",
+      "info": "Next on the last product jumps back to the first, and Previous on the first jumps to the last.",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' }}"
     },
     {
       "type": "checkbox",
