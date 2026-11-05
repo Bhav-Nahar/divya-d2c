@@ -24,6 +24,9 @@
 
   {%- if s.heading != blank or s.subheading != blank -%}
     <div class="testimonials__header testimonials__header--{{ s.heading_alignment }}">
+      {%- if s.eyebrow != blank -%}
+        <p class="testimonials__eyebrow">{{ s.eyebrow }}</p>
+      {%- endif -%}
       {%- if s.heading != blank -%}
         <h2 class="testimonials__heading {{ s.heading_level }}">{{ s.heading }}</h2>
       {%- endif -%}
@@ -57,7 +60,7 @@
   <ul
     class="testimonials testimonials--{{ s.card_style }} testimonials--desktop-{{ s.desktop_layout }} testimonials--text-{{ s.card_text_size | default: 'regular' }}"
     data-scroll-track
-    style="--tm-columns: {{ s.columns }}; --tm-gap: {{ s.gap }}px; --tm-radius: {{ s.corner_radius }}px;{% if s.star_color != blank %} --tm-star-color: {{ s.star_color }};{% endif %}"
+    style="--tm-columns: {{ s.columns }}; --tm-gap: {{ s.gap }}px; --tm-radius: {{ s.corner_radius }}px; --tm-others: {{ review_blocks | minus: 1 | at_least: 1 }};{% if s.feature_background != blank %} --tm-feature-bg: {{ s.feature_background }};{% endif %}{% if s.star_color != blank %} --tm-star-color: {{ s.star_color }};{% endif %}"
   >
     {%- for block in section.blocks -%}
       {%- if block.type != 'review' -%}
@@ -100,7 +103,7 @@
             {%- endif -%}
 
             {%- if block.settings.quote != blank -%}
-              <blockquote class="review-card__quote">{{ block.settings.quote }}</blockquote>
+              <blockquote class="review-card__quote">{{ block.settings.quote | strip | remove: '"' | remove: '“' | remove: '”' }}</blockquote>
             {%- endif -%}
           </div>
 
@@ -467,6 +470,120 @@
     font-size: 0.6875rem;
   }
 
+  .testimonials__eyebrow {
+    margin: 0 0 0.75rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--review-muted);
+  }
+
+  /*
+   * Spotlight: the first review leads on a solid brand panel, the rest stack
+   * beside it as quiet cards. Mobile keeps the swipe row; the first card still
+   * leads there.
+   */
+  .testimonials--spotlight {
+    --tm-feature-bg: #545437;
+    --review-star: var(--tm-star-color, #e3c06a);
+  }
+
+  .testimonials--spotlight .review-card {
+    padding: 1.75rem 1.5rem 1.5rem;
+    border: 1px solid var(--review-edge);
+    border-radius: max(var(--tm-radius), 4px);
+    background: var(--review-surface);
+  }
+
+  .testimonials--spotlight .review-card::before {
+    font-size: 3.5rem;
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card {
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 2.25rem 1.75rem 1.75rem;
+    border-color: transparent;
+    background: var(--tm-feature-bg);
+    color: #fff;
+    --review-muted: rgb(255 255 255 / 0.7);
+    --review-edge: rgb(255 255 255 / 0.2);
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card::before {
+    inset-block-start: 0.1em;
+    inset-inline-start: 0.35em;
+    inset-inline-end: auto;
+    font-size: 7rem;
+    opacity: 0.16;
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__body {
+    flex: 0 1 auto;
+    gap: 1rem;
+    margin-block-start: 2.5rem;
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__stars {
+    --review-star-size: 1.125rem;
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__title {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--review-muted);
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__quote {
+    font-family: var(--font-heading--family, serif);
+    font-size: 1.375rem;
+    line-height: 1.5;
+    -webkit-line-clamp: unset;
+    display: block;
+    overflow: visible;
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__avatar {
+    background: rgb(255 255 255 / 0.16);
+  }
+
+  .testimonials--spotlight .testimonials__item:first-child .review-card__check {
+    fill: var(--review-star);
+  }
+
+  .testimonials--spotlight .review-card__quote {
+    -webkit-line-clamp: 5;
+  }
+
+  @media (hover: hover) {
+    .testimonials--spotlight .testimonials__item:first-child .review-card:hover {
+      transform: none;
+      box-shadow: none;
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .testimonials--spotlight.testimonials--desktop-grid {
+      grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+      grid-template-rows: repeat(var(--tm-others), auto);
+      align-items: stretch;
+    }
+
+    .testimonials--spotlight.testimonials--desktop-grid .testimonials__item:first-child {
+      grid-row: 1 / span var(--tm-others);
+    }
+
+    .testimonials--spotlight.testimonials--desktop-grid .testimonials__item:first-child .review-card {
+      padding: 3rem 2.75rem 2.5rem;
+    }
+
+    .testimonials--spotlight.testimonials--desktop-grid .testimonials__item:first-child .review-card__quote {
+      font-size: 1.75rem;
+    }
+  }
+
   @media screen and (max-width: 749px) {
     .testimonials__header {
       margin-block-end: 1.5rem;
@@ -524,6 +641,12 @@
       "id": "heading",
       "label": "Heading",
       "default": "What our customers say"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small label above the heading",
+      "info": "e.g. Reviews. Leave empty to hide."
     },
     {
       "type": "text",
@@ -601,9 +724,21 @@
         {
           "value": "boxed",
           "label": "Boxed"
+        },
+        {
+          "value": "spotlight",
+          "label": "Spotlight (first review featured)"
         }
       ],
       "default": "plain"
+    },
+    {
+      "type": "color",
+      "id": "feature_background",
+      "label": "Spotlight panel color",
+      "info": "Background of the featured review. Text on it is white.",
+      "default": "#545437",
+      "visible_if": "{{ section.settings.card_style == 'spotlight' }}"
     },
     {
       "type": "select",

@@ -685,7 +685,7 @@
         "heading_alignment": "center",
         "heading_level": "h2",
         "card_text_size": "regular",
-        "card_style": "plain",
+        "card_style": "spotlight",
         "desktop_layout": "grid",
         "autoplay": false,
         "autoplay_speed": 30,
