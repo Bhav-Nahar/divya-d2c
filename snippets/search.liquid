@@ -89,14 +89,15 @@
     margin-inline-end: var(--gap-md);
   }
 
-  /* Bottom menu row: compact search bar sits at the far end, menu stays centred. */
-  .header__row--bottom .header__column--right {
+  /* Top row: compact search bar sits beside the account and cart icons. */
+  .header__row--top .header__column--right {
     justify-content: flex-end;
+    align-items: center;
   }
 
-  .header__row--bottom .header__column .search-action--bar {
-    width: clamp(200px, 18vw, 300px);
-    margin-inline-end: 0;
+  .header__row--top .header__column .search-action--bar {
+    width: clamp(200px, 20vw, 300px);
+    margin-inline-end: var(--gap-md);
   }
 
   .header__mobile-search {
