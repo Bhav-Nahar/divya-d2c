@@ -89,6 +89,16 @@
     margin-inline-end: var(--gap-md);
   }
 
+  /* Bottom menu row: compact search bar sits at the far end, menu stays centred. */
+  .header__row--bottom .header__column--right {
+    justify-content: flex-end;
+  }
+
+  .header__row--bottom .header__column .search-action--bar {
+    width: clamp(200px, 18vw, 300px);
+    margin-inline-end: 0;
+  }
+
   .header__mobile-search {
     padding: 0 var(--padding-lg, 16px) 12px;
     background: var(--color-background-top-row);
