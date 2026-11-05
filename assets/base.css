@@ -658,13 +658,22 @@ h1,
   color: var(--color);
 }
 
-/* Mobile: the 56px desktop h1 is too large on a phone. Desktop is unchanged. */
+/* Mobile: headings are fluid down to 48px, which is too large on a phone. Desktop is unchanged. */
 @media screen and (max-width: 749px) {
   h1,
   .h1.h1,
   .text-block.h1 > *,
   .text-block.h1 :is(h1, h2, h3, h4, h5, h6) {
-    font-size: min(var(--font-h1--size), 2.125rem);
+    font-size: min(var(--font-h1--size), 1.875rem);
+    line-height: 1.15;
+  }
+
+  h2,
+  .h2.h2,
+  .text-block.h2 > *,
+  .text-block.h2 :is(h1, h2, h3, h4, h5, h6) {
+    font-size: min(var(--font-h2--size), 1.5rem);
+    line-height: 1.2;
   }
 }
 

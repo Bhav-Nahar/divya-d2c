@@ -671,6 +671,23 @@
     }
   }
 
+  /* Mobile: scrolling slides the logo/menu/icons row away and leaves only the search bar. */
+  @media screen and (max-width: 749px) {
+    .header-section:has(> #header-component[sticky='always']):has(.header__mobile-search) {
+      top: calc(-1px - var(--header-top-row-height, 0px));
+    }
+
+    /* No divider under the top row or under the stuck header on phones. */
+    .header__row--top {
+      --border-bottom-width-mobile: 0px !important;
+      border-bottom-width: 0 !important;
+    }
+
+    #header-component[data-sticky-state='active'] {
+      box-shadow: none !important;
+    }
+  }
+
   .header[data-sticky-state] {
     transition: opacity var(--animation-speed) var(--animation-easing);
     opacity: 1;
@@ -1262,7 +1279,7 @@
   (() => {
     const wrapper = document.getElementById('shopify-section-{{ section.id }}');
     const topRow = wrapper && wrapper.querySelector('.header__row--top');
-    if (!topRow || !wrapper.querySelector('.header__row--bottom') || !window.ResizeObserver) return;
+    if (!topRow || !(wrapper.querySelector('.header__row--bottom') || wrapper.querySelector('.header__mobile-search')) || !window.ResizeObserver) return;
     new ResizeObserver(() => {
       wrapper.style.setProperty('--header-top-row-height', topRow.offsetHeight + 'px');
     }).observe(topRow);
