@@ -146,51 +146,12 @@
   }
 
   @media screen and (max-width: 749px) {
-    .newsletter__panel {
-      gap: 0.625rem;
-      padding: 2rem 1.25rem;
-      border: 1px solid rgb(from currentcolor r g b / 0.15);
-      background: rgb(from currentcolor r g b / 0.04);
-    }
-
-    .newsletter__text {
-      font-size: 0.875rem;
-      max-width: 28ch;
-    }
-
-    .newsletter__form {
-      margin-block-start: 0.5rem;
-    }
-
-    /* Two separate controls read cleaner than one boxed field on a narrow screen. */
     .newsletter__field {
       flex-direction: column;
-      gap: 0.625rem;
-      border: 0;
-    }
-
-    .newsletter__input {
-      width: 100%;
-      min-height: 3rem;
-      padding: 0 1rem;
-      border: 1px solid rgb(from currentcolor r g b / 0.35);
-      background: var(--color-background, #fff);
-      /* 16px stops iOS from zooming the page when the field is focused. */
-      font-size: 1rem;
-    }
-
-    .newsletter__input:focus {
-      border-color: currentcolor;
     }
 
     .newsletter__button {
-      width: 100%;
-      min-height: 3rem;
-      padding: 0 1rem;
-    }
-
-    .newsletter__note {
-      margin-block-start: 0.25rem;
+      padding: 0.875rem 1rem;
     }
   }
 {% endstylesheet %}
