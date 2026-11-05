@@ -1,6 +1,7 @@
 {%- liquid
   assign s = section.settings
   assign mobile_image = s.image_mobile | default: s.image
+  assign banner_alt = s.image.alt | default: s.heading | strip_html
 
   # Desktop size is either an aspect ratio or a screen height — one dropdown, two modes.
   assign desktop_ratio = s.ratio_desktop
@@ -45,7 +46,7 @@
             sizes: '100vw',
             loading: 'eager',
             fetchpriority: 'high',
-            alt: s.image.alt | default: s.heading | strip_html
+            alt: banner_alt
         }}
       </picture>
     {%- else -%}
