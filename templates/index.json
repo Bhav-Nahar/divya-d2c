@@ -747,6 +747,35 @@
         "padding-block-start": 32,
         "padding-block-end": 32
       }
+    },
+    "journal": {
+      "type": "journal",
+      "settings": {
+        "eyebrow": "Journal",
+        "heading": "From our journal",
+        "link_label": "See all",
+        "post_count": 3,
+        "columns": 3,
+        "show_date": true,
+        "show_excerpt": true,
+        "section_width": "page-width",
+        "padding-block-start": 40,
+        "padding-block-end": 40
+      }
+    },
+    "newsletter": {
+      "type": "newsletter",
+      "settings": {
+        "heading": "Stay in the loop",
+        "text": "Leave your email for new arrivals, restocks and offers. No fixed schedule, no spam.",
+        "placeholder": "Your email address",
+        "button_label": "Keep me posted",
+        "success_text": "Thank you for subscribing.",
+        "note": "Unsubscribe any time.",
+        "section_width": "page-width",
+        "padding-block-start": 40,
+        "padding-block-end": 48
+      }
     }
   },
   "order": [
@@ -759,6 +788,8 @@
     "unique_design",
     "video_reels",
     "reviews",
-    "bespoke"
+    "bespoke",
+    "journal",
+    "newsletter"
   ]
 }

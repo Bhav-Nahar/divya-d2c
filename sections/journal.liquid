@@ -1,0 +1,302 @@
+{%- liquid
+  assign s = section.settings
+
+  # Use the chosen blog, or fall back to the first blog that has articles.
+  assign source_blog = s.blog
+  if source_blog == blank or source_blog.articles_count == 0
+    assign source_blog = null
+    for b in blogs
+      if b.articles_count > 0 and source_blog == null
+        assign source_blog = b
+      endif
+    endfor
+  endif
+-%}
+
+{%- comment -%} No blog / no articles: the whole section stays out of the page. {%- endcomment -%}
+{%- if source_blog != blank and source_blog.articles_count > 0 -%}
+  <div class="journal section section--{{ s.section_width }} spacing-style" style="{% render 'spacing-style', settings: s %}">
+    <div class="journal__header">
+      <div class="journal__titles">
+        {%- if s.eyebrow != blank -%}
+          <p class="journal__eyebrow">{{ s.eyebrow }}</p>
+        {%- endif -%}
+        {%- if s.heading != blank -%}
+          <h2 class="journal__heading">{{ s.heading }}</h2>
+        {%- endif -%}
+      </div>
+      {%- if s.link_label != blank -%}
+        <a class="journal__all" href="{{ source_blog.url }}">{{ s.link_label }}</a>
+      {%- endif -%}
+    </div>
+
+    <ul class="journal__list" style="--journal-columns: {{ s.columns }};">
+      {%- for article in source_blog.articles limit: s.post_count -%}
+        <li class="journal__item">
+          <a class="journal-card" href="{{ article.url }}">
+            <span class="journal-card__media">
+              {%- if article.image -%}
+                {%- assign card_alt = article.image.alt | default: article.title -%}
+                {{
+                  article.image
+                  | image_url: width: 900
+                  | image_tag: loading: 'lazy', widths: '400, 600, 900', sizes: '(max-width: 749px) 80vw, 30vw', alt: card_alt
+                }}
+              {%- else -%}
+                <span class="journal-card__placeholder" aria-hidden="true"></span>
+              {%- endif -%}
+            </span>
+            <span class="journal-card__body">
+              {%- if s.show_date -%}
+                <time class="journal-card__date" datetime="{{ article.published_at | date: '%Y-%m-%d' }}">
+                  {{- article.published_at | date: '%d %B %Y' -}}
+                </time>
+              {%- endif -%}
+              <span class="journal-card__title">{{ article.title }}</span>
+              {%- if s.show_excerpt -%}
+                {%- assign excerpt = article.excerpt_or_content | strip_html | truncatewords: 22 -%}
+                {%- if excerpt != blank -%}
+                  <span class="journal-card__excerpt">{{ excerpt }}</span>
+                {%- endif -%}
+              {%- endif -%}
+            </span>
+          </a>
+        </li>
+      {%- endfor -%}
+    </ul>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .journal__header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-block-end: 1.75rem;
+  }
+
+  .journal__eyebrow {
+    margin: 0 0 0.5rem;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .journal__heading {
+    margin: 0;
+    font-size: clamp(1.375rem, 1.1rem + 0.9vw, 1.75rem);
+    line-height: 1.2;
+  }
+
+  .journal__all {
+    flex: none;
+    color: inherit;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: underline;
+    text-underline-offset: 0.3em;
+  }
+
+  .journal__list {
+    display: flex;
+    gap: 1.25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .journal__list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .journal__item {
+    flex: 0 0 min(80%, 20rem);
+    scroll-snap-align: start;
+    display: flex;
+  }
+
+  .journal-card {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    width: 100%;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .journal-card__media {
+    display: block;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: rgb(from currentcolor r g b / 0.06);
+  }
+
+  .journal-card__media img,
+  .journal-card__placeholder {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .journal-card__body {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .journal-card__date {
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+  }
+
+  .journal-card__title {
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.35;
+    text-wrap: balance;
+  }
+
+  .journal-card__excerpt {
+    font-size: 0.875rem;
+    line-height: 1.55;
+    opacity: 0.7;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  @media (hover: hover) {
+    .journal-card:hover .journal-card__media img {
+      transform: scale(1.04);
+    }
+
+    .journal-card:hover .journal-card__title {
+      text-decoration: underline;
+      text-underline-offset: 0.25em;
+    }
+  }
+
+  @media screen and (max-width: 749px) {
+    .journal__list {
+      margin-inline: calc(var(--page-margin, 1rem) * -1);
+      padding-inline: var(--page-margin, 1rem);
+    }
+  }
+
+  @media screen and (min-width: 750px) {
+    .journal__list {
+      display: grid;
+      grid-template-columns: repeat(var(--journal-columns, 3), minmax(0, 1fr));
+      gap: 1.75rem;
+      overflow: visible;
+    }
+
+    .journal__item {
+      flex: none;
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Journal (latest articles)",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "blog",
+      "id": "blog",
+      "label": "Blog",
+      "info": "Leave empty to use the first blog that has articles. With no articles the section hides itself."
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Small label",
+      "default": "Journal"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "From our journal"
+    },
+    {
+      "type": "text",
+      "id": "link_label",
+      "label": "View-all link",
+      "default": "See all"
+    },
+    {
+      "type": "range",
+      "id": "post_count",
+      "label": "Articles to show",
+      "min": 2,
+      "max": 6,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "range",
+      "id": "columns",
+      "label": "Desktop columns",
+      "min": 2,
+      "max": 4,
+      "step": 1,
+      "default": 3
+    },
+    {
+      "type": "checkbox",
+      "id": "show_date",
+      "label": "Show date",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_excerpt",
+      "label": "Show excerpt",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "section_width",
+      "label": "Width",
+      "options": [
+        { "value": "page-width", "label": "Page" },
+        { "value": "full-width", "label": "Full" }
+      ],
+      "default": "page-width"
+    },
+    {
+      "type": "range",
+      "id": "padding-block-start",
+      "label": "Top padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding-block-end",
+      "label": "Bottom padding",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [{ "name": "Journal (latest articles)" }]
+}
+{% endschema %}
