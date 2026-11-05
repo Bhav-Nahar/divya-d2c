@@ -14,12 +14,14 @@
       "settings": {
         "image": "shopify://shop_images/Golden_Emerald_Necklace_Editorial.png",
         "image_mobile": "shopify://shop_images/Sunlit_Joy_and_Jewel_Tones.png",
-        "ratio_mobile": "4 / 3",
-        "ratio_desktop": "16 / 6",
-        "show_description": true,
-        "text_position": "bottom-left",
-        "text_color": "#ffffff",
-        "overlay_opacity": 25
+        "ratio_mobile": "16 / 7",
+        "height_desktop": 14,
+        "background_color": "#f5ede3",
+        "show_count": true,
+        "show_description": false,
+        "point_1": "Certified Gemstones & 925 Silver",
+        "point_2": "Handcrafted with Precision",
+        "point_3": "15-Day Money Back"
       }
     },
     "breadcrumbs": {
@@ -27,7 +29,7 @@
       "settings": {
         "show_title": false,
         "heading_level": "h3",
-        "show_count": true,
+        "show_count": false,
         "show_description": false,
         "section_width": "page-width",
         "padding-block-start": 16,
