@@ -22,7 +22,7 @@
     --banner-text: {{ s.text_color }};
   "
 >
-  {%- if s.link != blank and s.button_label == blank -%}
+  {%- if s.link != blank -%}
     <a class="main-banner__cover-link" href="{{ s.link }}" aria-label="{{ s.heading | strip_html }}"></a>
   {%- endif -%}
 
@@ -269,7 +269,7 @@
       "type": "url",
       "id": "link",
       "label": "Link",
-      "info": "With no button label the whole banner becomes the link."
+      "info": "The whole banner is clickable and goes to this link."
     },
     {
       "type": "select",
