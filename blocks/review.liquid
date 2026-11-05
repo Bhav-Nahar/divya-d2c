@@ -69,7 +69,7 @@
     </svg>
     <div
       class="rating"
-      style="--star-size: calc(var(--font-{{ block_settings.type_preset }}--size) * 1.1);"
+      style="--star-size: calc(var(--font-{{ block_settings.type_preset }}--size) * 0.95);"
       aria-label="{{ 'accessibility.rating' | t: rating: rating }}"
     >
       {% if block_settings.stars_style == 'single' %}
@@ -99,16 +99,10 @@
     </div>
 
     {%- if block_settings.show_number or block_settings.stars_style == 'single' -%}
-      <p class="rating-count {{ block_settings.type_preset }}">
-        {%- if block_settings.stars_style == 'single' -%}
-          <span aria-hidden="true">{{- rating | round: 1 }}</span>
-        {%- endif -%}
-        {%- if block_settings.stars_style == 'single' and block_settings.show_number -%}
-          <span class="rating-count-separator">|</span>
-        {%- endif -%}
+      <p class="rating-count">
+        <span class="rating-count__value" aria-hidden="true">{{- rating | round: 1 -}}</span>
         {%- if block_settings.show_number -%}
-          {{- rating_count }}
-          {{ 'content.reviews' | t }}
+          <span class="rating-count__total">({{- rating_count }} {{ 'content.reviews' | t -}})</span>
         {%- endif -%}
       </p>
     {%- endif -%}
@@ -117,8 +111,8 @@
 
 {% stylesheet %}
   .rating-wrapper {
-    --star-fill-color: var(--color-foreground);
-    --star-fill-color-rgb: var(--color-foreground-rgb);
+    --star-fill-color: #c9a24a;
+    --star-fill-color-rgb: 201 162 74;
     --color: var(--color-foreground);
     --color-rgb: var(--color-foreground-rgb);
     gap: var(--gap-xs);
@@ -139,17 +133,31 @@
     gap: var(--gap-3xs);
   }
 
-  .rating-wrapper .rating-count,
-  .rating-wrapper .rating-count-separator {
-    color: var(--star-fill-color);
-    margin: 0;
-    white-space: nowrap;
+  .rating-wrapper {
+    flex-wrap: wrap;
+    row-gap: 0.125rem;
+    column-gap: var(--gap-xs);
   }
 
-  .rating-count-separator {
-    opacity: var(--opacity-20);
-    padding-left: calc(var(--padding-xs) / 2);
-    padding-right: var(--padding-xs);
+  .rating-wrapper .rating-count {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.35em;
+    margin: 0;
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+    color: var(--color);
+  }
+
+  .rating-count__value {
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rating-count__total {
+    opacity: 0.6;
   }
 
   .stars {
