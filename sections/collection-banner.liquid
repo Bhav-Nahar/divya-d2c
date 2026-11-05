@@ -1,0 +1,238 @@
+{%- liquid
+  assign s = section.settings
+
+  # The collection's own image wins; the setting is a fallback for collections without one.
+  assign banner_image = collection.image | default: s.image
+  assign mobile_image = s.image_mobile | default: banner_image
+  assign banner_alt = banner_image.alt | default: collection.title | strip_html
+  assign banner_text = collection.description | strip_html | truncatewords: 30
+-%}
+
+{%- if collection != blank -%}
+  <div
+    class="collection-banner collection-banner--{{ s.text_position }}{% if banner_image == blank %} collection-banner--plain{% endif %} section--full-width"
+    style="
+      --cb-ratio-mobile: {{ s.ratio_mobile }};
+      --cb-ratio-desktop: {{ s.ratio_desktop }};
+      --cb-overlay: {{ s.overlay_opacity | divided_by: 100.0 }};
+      --cb-text: {{ s.text_color }};
+    "
+  >
+    {%- if banner_image != blank -%}
+      <div class="collection-banner__media">
+        <picture>
+          <source
+            media="(max-width: 749px)"
+            srcset="
+              {{ mobile_image | image_url: width: 750 }} 750w,
+              {{ mobile_image | image_url: width: 1080 }} 1080w,
+              {{ mobile_image | image_url: width: 1500 }} 1500w
+            "
+            sizes="100vw"
+          >
+          {{
+            banner_image
+            | image_url: width: 3000
+            | image_tag:
+              widths: '750, 1100, 1500, 2000, 2400, 3000',
+              sizes: '100vw',
+              loading: 'eager',
+              fetchpriority: 'high',
+              alt: banner_alt
+          }}
+        </picture>
+      </div>
+    {%- endif -%}
+
+    <div class="collection-banner__content">
+      <h1 class="collection-banner__title">{{ collection.title }}</h1>
+      {%- if s.show_description and banner_text != blank -%}
+        <p class="collection-banner__text">{{ banner_text }}</p>
+      {%- endif -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+  .collection-banner {
+    position: relative;
+    display: grid;
+    isolation: isolate;
+  }
+
+  .collection-banner__media,
+  .collection-banner__content {
+    grid-area: 1 / 1;
+  }
+
+  .collection-banner__media {
+    aspect-ratio: var(--cb-ratio-mobile);
+    overflow: hidden;
+  }
+
+  .collection-banner__media picture {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .collection-banner__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .collection-banner__media::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgb(0 0 0 / var(--cb-overlay));
+    pointer-events: none;
+  }
+
+  .collection-banner__content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    gap: 0.5rem;
+    padding: var(--padding-lg, 1.5rem);
+    color: var(--cb-text);
+  }
+
+  .collection-banner--center .collection-banner__content {
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+  }
+
+  .collection-banner--bottom-center .collection-banner__content {
+    align-items: center;
+    text-align: center;
+  }
+
+  .collection-banner__title {
+    margin: 0;
+    color: inherit;
+    font-size: clamp(1.625rem, 1.2rem + 1.6vw, 2.75rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .collection-banner__text {
+    margin: 0;
+    max-width: 46ch;
+    color: inherit;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    opacity: 0.92;
+  }
+
+  /* No image: a quiet title band instead of an empty gap. */
+  .collection-banner--plain {
+    --cb-text: currentcolor;
+  }
+
+  .collection-banner--plain .collection-banner__content {
+    padding-block: 2.5rem 1.5rem;
+    justify-content: center;
+  }
+
+  @media screen and (min-width: 750px) {
+    .collection-banner__media {
+      aspect-ratio: var(--cb-ratio-desktop);
+    }
+
+    .collection-banner__content {
+      padding: var(--padding-2xl, 3rem) var(--page-margin, 3rem);
+    }
+  }
+{% endstylesheet %}
+
+{% schema %}
+{
+  "name": "Collection banner",
+  "tag": "section",
+  "settings": [
+    {
+      "type": "paragraph",
+      "content": "Uses the collection's own image (set it in Products, then Collections). The images below are only used when a collection has none."
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Fallback image"
+    },
+    {
+      "type": "image_picker",
+      "id": "image_mobile",
+      "label": "Mobile image",
+      "info": "Falls back to the desktop image."
+    },
+    {
+      "type": "select",
+      "id": "ratio_mobile",
+      "label": "Mobile ratio",
+      "options": [
+        { "value": "1 / 1", "label": "1:1 square" },
+        { "value": "4 / 5", "label": "4:5 portrait" },
+        { "value": "4 / 3", "label": "4:3 landscape" },
+        { "value": "16 / 9", "label": "16:9 wide" }
+      ],
+      "default": "4 / 3"
+    },
+    {
+      "type": "select",
+      "id": "ratio_desktop",
+      "label": "Desktop ratio",
+      "options": [
+        { "value": "3 / 1", "label": "3:1 band" },
+        { "value": "16 / 6", "label": "16:6 editorial" },
+        { "value": "21 / 9", "label": "21:9 ultrawide" },
+        { "value": "2 / 1", "label": "2:1 cinematic" },
+        { "value": "16 / 9", "label": "16:9 tall" }
+      ],
+      "default": "16 / 6"
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_description",
+      "label": "Show collection description",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "text_position",
+      "label": "Text position",
+      "options": [
+        { "value": "bottom-left", "label": "Bottom left" },
+        { "value": "bottom-center", "label": "Bottom center" },
+        { "value": "center", "label": "Center" }
+      ],
+      "default": "bottom-left"
+    },
+    {
+      "type": "color",
+      "id": "text_color",
+      "label": "Text color",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "label": "Image overlay",
+      "min": 0,
+      "max": 80,
+      "step": 5,
+      "unit": "%",
+      "default": 25
+    }
+  ]
+}
+{% endschema %}

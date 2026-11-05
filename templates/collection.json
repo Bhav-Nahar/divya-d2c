@@ -8,13 +8,24 @@
  * ------------------------------------------------------------
  */{
   "sections": {
+    "collection_banner": {
+      "type": "collection-banner",
+      "settings": {
+        "ratio_mobile": "4 / 3",
+        "ratio_desktop": "16 / 6",
+        "show_description": true,
+        "text_position": "bottom-left",
+        "text_color": "#ffffff",
+        "overlay_opacity": 25
+      }
+    },
     "breadcrumbs": {
       "type": "breadcrumbs",
       "settings": {
-        "show_title": true,
+        "show_title": false,
         "heading_level": "h3",
         "show_count": true,
-        "show_description": true,
+        "show_description": false,
         "section_width": "page-width",
         "padding-block-start": 16,
         "padding-block-end": 8
@@ -213,6 +224,7 @@
     }
   },
   "order": [
+    "collection_banner",
     "breadcrumbs",
     "reviews",
     "main"

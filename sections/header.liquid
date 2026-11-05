@@ -1277,12 +1277,42 @@
 
 <script>
   (() => {
-    const wrapper = document.getElementById('shopify-section-{{ section.id }}');
-    const topRow = wrapper && wrapper.querySelector('.header__row--top');
-    if (!topRow || !(wrapper.querySelector('.header__row--bottom') || wrapper.querySelector('.header__mobile-search')) || !window.ResizeObserver) return;
-    new ResizeObserver(() => {
-      wrapper.style.setProperty('--header-top-row-height', topRow.offsetHeight + 'px');
-    }).observe(topRow);
+    const id = 'shopify-section-{{ section.id }}';
+    let frame = null;
+    let last = null;
+
+    // Re-queries the DOM every time: the section can be re-rendered, and Android Chrome
+    // resizes the viewport as its address bar shows and hides while scrolling.
+    const apply = () => {
+      frame = null;
+      const wrapper = document.getElementById(id);
+      const topRow = wrapper && wrapper.querySelector('.header__row--top');
+      const hasStaticRow = wrapper && (wrapper.querySelector('.header__row--bottom') || wrapper.querySelector('.header__mobile-search'));
+      if (!topRow || !hasStaticRow) return;
+
+      // Never pull the header up further than its own height minus the row that must stay visible.
+      const keep = wrapper.querySelector('.header__mobile-search');
+      const max = wrapper.offsetHeight - (keep && keep.offsetHeight ? keep.offsetHeight : 0) - 1;
+      const value = Math.max(0, Math.min(topRow.offsetHeight, max));
+
+      if (value !== last || wrapper.style.getPropertyValue('--header-top-row-height') === '') {
+        last = value;
+        wrapper.style.setProperty('--header-top-row-height', value + 'px');
+      }
+    };
+
+    const schedule = () => {
+      if (frame === null) frame = requestAnimationFrame(apply);
+    };
+
+    apply();
+    window.addEventListener('resize', schedule, { passive: true });
+    window.addEventListener('orientationchange', schedule);
+    window.addEventListener('pageshow', schedule);
+    window.addEventListener('scroll', schedule, { passive: true, capture: true });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', schedule);
+    document.addEventListener('shopify:section:load', schedule);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(schedule);
   })();
 </script>
 
