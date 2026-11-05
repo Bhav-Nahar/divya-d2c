@@ -65,6 +65,13 @@
       {%- endfor -%}
     </ul>
   </div>
+{%- elsif request.design_mode -%}
+  {%- comment -%} Editor-only hint: visitors never see this. {%- endcomment -%}
+  <div class="journal section section--page-width">
+    <p style="padding: 1rem; border: 1px dashed currentcolor; opacity: 0.6; text-align: center;">
+      Journal: no published articles found. Publish an article in a blog and it will appear here.
+    </p>
+  </div>
 {%- endif -%}
 
 {% stylesheet %}
