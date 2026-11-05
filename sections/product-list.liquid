@@ -15,6 +15,7 @@
   class="
     section
     section--{{ section.settings.section_width }}
+    {% if section.settings.layout_type == 'carousel' and section.settings.icons_style != 'none' and section.settings.arrows_top_right %}section-resource-list--arrows-top{% endif %}
     {% if section.settings.background_color != blank %}color-custom-{{ section.id }}{% endif %}
     section-resource-list
     spacing-style
@@ -85,6 +86,60 @@
     {%- content_for 'blocks' -%}
   </div>
 </div>
+
+{% stylesheet %}
+  /* Carousel arrows in the top-right, level with the section heading. */
+  .section-resource-list--arrows-top .resource-list__carousel slideshow-arrows {
+    inset: auto;
+    top: calc(-1 * var(--rl-arrows-offset, 3rem));
+    left: 0;
+    right: 0;
+    height: var(--rl-arrows-height, 2.75rem);
+    justify-content: flex-end;
+    align-items: center;
+    gap: 0.25rem;
+    padding-inline: var(--util-page-margin-offset, 0px);
+    mix-blend-mode: normal;
+  }
+
+  .section-resource-list--arrows-top .resource-list__carousel slideshow-arrows .slideshow-control {
+    opacity: 1;
+    animation: none;
+    margin: 0;
+    color: rgb(var(--color-foreground-rgb));
+  }
+
+  .section-resource-list--arrows-top .resource-list__carousel .slideshow-control[disabled] {
+    display: flex;
+    opacity: 0.3;
+    pointer-events: none;
+  }
+
+  /* Leave room so the "View all" link doesn't sit under the arrows. */
+  .section-resource-list--arrows-top .section-resource-list__header {
+    padding-inline-end: 6rem;
+  }
+{% endstylesheet %}
+
+<script>
+  (() => {
+    const section = document.getElementById('shopify-section-{{ section.id }}');
+    const root = section && section.querySelector('.section-resource-list--arrows-top');
+    if (!root || !window.ResizeObserver) return;
+    const header = root.querySelector('.section-resource-list__header');
+    const carousel = root.querySelector('.resource-list__carousel');
+    if (!header || !carousel) return;
+    const measure = () => {
+      const h = header.getBoundingClientRect();
+      const c = carousel.getBoundingClientRect();
+      if (!h.height) return;
+      root.style.setProperty('--rl-arrows-height', h.height + 'px');
+      root.style.setProperty('--rl-arrows-offset', c.top - h.top + 'px');
+    };
+    new ResizeObserver(measure).observe(root);
+    measure();
+  })();
+</script>
 
 {% schema %}
 {
@@ -245,6 +300,14 @@
       ],
       "default": "arrow",
       "visible_if": "{{ section.settings.layout_type == 'carousel' or section.settings.carousel_on_mobile == true }}"
+    },
+    {
+      "type": "checkbox",
+      "id": "arrows_top_right",
+      "label": "Show arrows in the top-right corner",
+      "info": "Aligns the carousel arrows with the section heading.",
+      "default": true,
+      "visible_if": "{{ section.settings.layout_type == 'carousel' }}"
     },
     {
       "type": "select",
