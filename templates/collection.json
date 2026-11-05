@@ -6,11 +6,14 @@
  * or related systems. Please exercise caution as any changes
  * made to this file may be overwritten.
  * ------------------------------------------------------------
- */{
+ */
+{
   "sections": {
     "collection_banner": {
       "type": "collection-banner",
       "settings": {
+        "image": "shopify://shop_images/Golden_Emerald_Necklace_Editorial.png",
+        "image_mobile": "shopify://shop_images/Sunlit_Joy_and_Jewel_Tones.png",
         "ratio_mobile": "4 / 3",
         "ratio_desktop": "16 / 6",
         "show_description": true,
@@ -41,7 +44,8 @@
             "title": "Review title",
             "quote": "Replace with a real customer review from this collection.",
             "author": "Customer name",
-            "detail": "2 weeks ago"
+            "detail": "2 weeks ago",
+            "verified": true
           }
         },
         "review_2": {
@@ -51,7 +55,8 @@
             "title": "Review title",
             "quote": "Replace with a real customer review from this collection.",
             "author": "Customer name",
-            "detail": "1 month ago"
+            "detail": "1 month ago",
+            "verified": true
           }
         },
         "review_3": {
@@ -61,7 +66,8 @@
             "title": "Review title",
             "quote": "Replace with a real customer review from this collection.",
             "author": "Customer name",
-            "detail": "1 month ago"
+            "detail": "1 month ago",
+            "verified": true
           }
         },
         "review_4": {
@@ -71,7 +77,8 @@
             "title": "Review title",
             "quote": "Replace with a real customer review from this collection.",
             "author": "Customer name",
-            "detail": "2 months ago"
+            "detail": "2 months ago",
+            "verified": true
           }
         }
       },
@@ -83,20 +90,26 @@
       ],
       "settings": {
         "heading": "",
+        "eyebrow": "",
+        "subheading": "",
         "heading_alignment": "left",
         "heading_level": "h5",
+        "card_text_size": "compact",
         "card_style": "boxed",
+        "feature_background": "#545437",
         "desktop_layout": "scroll",
+        "autoplay": true,
+        "autoplay_speed": 25,
         "columns": 3,
         "gap": 12,
         "corner_radius": 12,
+        "ratio": "1 / 1",
         "show_stars": true,
+        "star_color": "",
+        "background_color": "",
         "section_width": "page-width",
         "padding-block-start": 16,
-        "padding-block-end": 8,
-        "autoplay": true,
-        "autoplay_speed": 25,
-        "card_text_size": "compact"
+        "padding-block-end": 8
       }
     },
     "main": {
@@ -114,6 +127,8 @@
             "show_filter_label": false,
             "enable_sorting": true,
             "enable_grid_density": true,
+            "background_color": "",
+            "text_color": "",
             "padding-block-start": 8,
             "padding-block-end": 8,
             "padding-inline-start": 0,
@@ -128,9 +143,11 @@
           "static": true,
           "settings": {
             "product_card_gap": 4,
+            "background_color": "",
             "border": "none",
             "border_width": 1,
             "border_opacity": 100,
+            "border_color": "",
             "border_radius": 0,
             "padding-block-start": 0,
             "padding-block-end": 0,
@@ -145,6 +162,7 @@
                 "border": "none",
                 "border_width": 1,
                 "border_opacity": 100,
+                "border_color": "",
                 "border_radius": 0,
                 "padding-block-start": 0,
                 "padding-block-end": 0,
@@ -167,6 +185,7 @@
                 "letter_spacing": "normal",
                 "case": "none",
                 "wrap": "pretty",
+                "text_color": "",
                 "background": false,
                 "background_color": "#00000026",
                 "corner_radius": 0,
@@ -191,6 +210,7 @@
                 "line_height": "normal",
                 "letter_spacing": "normal",
                 "case": "none",
+                "text_color": "",
                 "padding-block-start": 0,
                 "padding-block-end": 0,
                 "padding-inline-start": 0,
@@ -208,8 +228,11 @@
       },
       "settings": {
         "layout_type": "grid",
+        "desktop_columns": "4",
         "product_card_size": "medium",
         "mobile_product_card_size": "small",
+        "enable_infinite_scroll": true,
+        "products_per_page": 16,
         "product_grid_width": "centered",
         "full_width_on_mobile": false,
         "columns_gap_horizontal": 12,
@@ -218,8 +241,7 @@
         "padding-inline-end": 0,
         "background_color": "{{ settings.color_palette.background }}",
         "padding-block-start": 0,
-        "padding-block-end": 32,
-        "desktop_columns": "4"
+        "padding-block-end": 32
       }
     }
   },
